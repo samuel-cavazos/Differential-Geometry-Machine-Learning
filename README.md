@@ -130,7 +130,7 @@ By computing these gradients, we can iteratively update $\mathbf{W}$ and $\mathb
 
 1. **Gradient with Respect to Weight $\mathbf{W}$:**
 
-   The partial derivative $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ measures how the loss changes concerning the weight $\mathbf{W}$. A positive gradient suggests that increasing $\mathbf{W}$ will increase the loss, while a negative gradient indicates that increasing $\mathbf{W}$ will decrease the loss. By moving $\mathbf{W}$ in the direction opposite to the gradient, we can reduce the loss.
+   The partial derivative $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ measures how the loss changes concerning the weight $\mathbf{W}$. A positive derivative suggests that increasing $\mathbf{W}$ will increase the loss, while a negative derivative indicates that increasing $\mathbf{W}$ will decrease the loss. By moving $\mathbf{W}$ in the direction opposite to the gradient, we can reduce the loss.
 
    If $x_i$ is the i-th data point, let $y_{i,\text{pred}} = \mathbf{W} \cdot x_i + \mathbf{b}$ be the predicted value for the $i$-th data point while $y_{i,\text{true}}$ denotes the true value. Mathematically, this gradient is computed as:
 
