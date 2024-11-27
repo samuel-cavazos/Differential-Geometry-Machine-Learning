@@ -378,7 +378,7 @@ plt.show()
 
 
 # Hidden layers
-We can add some complexity to our model by incorporating *hidden layers*, which allows the model to capture more information about the data than merely a single hidden layer. A hidden layer enables the network to learn intermediate representations and approximate more intricate functions beyond simple linear relationships. 
+We can add some complexity to our model by incorporating *hidden layers*, which allows the model to capture more information about the data than merely a single layer. A hidden layer enables the network to learn intermediate representations and approximate more intricate functions beyond simple linear relationships. 
 
 Let's construct a model with a single hidden layer. The input is mapped into a higher-dimensional space. The architecture will include:
 
