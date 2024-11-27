@@ -120,40 +120,36 @@ Our goal is to minimize this loss function.
 
 One thing to note about this loss function is that it is a differentiable function. Recal from vector calculus that the **gradient** of a differentiable funtion $f$ is a vector field $\nabla f$ whose value at point $p$ is a vector that points towards the direction of steepest ascent. 
 
-Understanding the gradients of the loss function with respect to the model parameters—specifically, the weight $ \mathbf{W} $ and bias $ \mathbf{b} $—is crucial in machine learning, particularly when employing optimization techniques like gradient descent. Our goal is to minimize the loss function. 
+Understanding the gradients of the loss function with respect to the model parameters—specifically, the weight $\mathbf{W}$ and bias $\mathbf{b}$—is crucial in machine learning, particularly when employing optimization techniques like gradient descent. Our goal is to minimize the loss function. 
 
-The gradients $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ and $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ indicate how sensitive the loss function $ \mathcal{L} $ is to changes in the parameters $ \mathbf{W} $ and $ \mathbf{b} $. In essence, they provide the direction and rate at which $ \mathcal{L} $ increases or decreases as we adjust these parameters.
+The gradients $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ and $\frac{\partial \mathcal{L}}{\partial \mathbf{b}}$ indicate how sensitive the loss function $\mathcal{L}$ is to changes in the parameters $\mathbf{W}$ and $\mathbf{b}$. In essence, they provide the direction and rate at which $\mathcal{L}$ increases or decreases as we adjust these parameters.
 
-By computing these gradients, we can iteratively update $ \mathbf{W} $ and $ \mathbf{b} $ to minimize the loss function, thereby improving the model's performance. This process is the foundation of the gradient descent optimization algorithm.
+By computing these gradients, we can iteratively update $\mathbf{W}$ and $\mathbf{b}$ to minimize the loss function, thereby improving the model's performance. This process is the foundation of the gradient descent optimization algorithm.
 
 **Intuition Behind the Gradients**
 
-1. **Gradient with Respect to Weight $ \mathbf{W} $:**
+1. **Gradient with Respect to Weight $\mathbf{W}$:**
 
-   The partial derivative $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ measures how the loss changes concerning the weight $ \mathbf{W} $. A positive gradient suggests that increasing $ \mathbf{W} $ will increase the loss, while a negative gradient indicates that increasing $ \mathbf{W} $ will decrease the loss. By moving $ \mathbf{W} $ in the direction opposite to the gradient, we can reduce the loss.
+   The partial derivative $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ measures how the loss changes concerning the weight $\mathbf{W}$. A positive gradient suggests that increasing $\mathbf{W}$ will increase the loss, while a negative gradient indicates that increasing $\mathbf{W}$ will decrease the loss. By moving $\mathbf{W}$ in the direction opposite to the gradient, we can reduce the loss.
 
-   If $x_i$ is the i-th data point, let $ y_{i,\text{pred}} = \mathbf{W} \cdot x_i + \mathbf{b} $ be the predicted value for the $i$-th data point while $ y_{i,\text{true}} $ denotes the true value. Mathematically, this gradient is computed as:
+   If $x_i$ is the i-th data point, let $y_{i,\text{pred}} = \mathbf{W} \cdot x_i + \mathbf{b}$ be the predicted value for the $i$-th data point while $y_{i,\text{true}}$ denotes the true value. Mathematically, this gradient is computed as:
 
-   $$
-   \begin{align}
-   \frac{\partial \mathcal{L}}{\partial \mathbf{W}} &= \frac{\partial}{\partial\mathbf{W}}\left( \frac{1}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})^2\right) \nonumber\\ 
-   &= \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial\mathbf{W}}(y_{i,\text{pred}} - y_{i,\text{true}})^2 \qquad \text{(Additive property of derivatives)} \nonumber\\
-   &= \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial\mathbf{W}}((\mathbf{W}\cdot x_i + \mathbf{b}) - y_{i,\text{true}})^2 \nonumber\\
-   &= \frac{1}{N}\sum_{i=1}^N 2\cdot((\mathbf{W}\cdot x_i + \mathbf{b}) - y_{i,\text{true}})\cdot (x_i) \qquad \text{(Chain rule)} \nonumber\\
-   &=\frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.
-   \end{align}
-   $$
+   $$\frac{\partial \mathcal{L}}{\partial \mathbf{W}} = \frac{\partial}{\partial\mathbf{W}}\left( \frac{1}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})^2\right)$$
+   
+   $$= \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial\mathbf{W}}(y_{i,\text{pred}} - y_{i,\text{true}})^2 \qquad \text{(Additive property of derivatives)}$$
+   
+   $$= \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial\mathbf{W}}((\mathbf{W}\cdot x_i + \mathbf{b}) - y_{i,\text{true}})^2$$
+   
+   $$= \frac{1}{N}\sum_{i=1}^N 2\cdot((\mathbf{W}\cdot x_i + \mathbf{b}) - y_{i,\text{true}})\cdot (x_i) \qquad \text{(Chain rule)}$$
+   
+   $$=\frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.$$
 
-2. **Gradient with Respect to Bias $ \mathbf{b} $:**
+3. **Gradient with Respect to Bias $ \mathbf{b} $:**
 
-   Similarly, the partial derivative $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ measures how the loss changes concerning the bias $ \mathbf{b} $. Adjusting $ \mathbf{b} $ in the direction opposite to this gradient will also help in minimizing the loss.
+   Similarly, the partial derivative $\frac{\partial \mathcal{L}}{\partial \mathbf{b}}$ measures how the loss changes concerning the bias $\mathbf{b}$. Adjusting $\mathbf{b}$ in the direction opposite to this gradient will also help in minimizing the loss.
 
    This gradient is computed as:
-   $$
-   \begin{align}
-   \frac{\partial \mathcal{L}}{\partial \mathbf{b}} &= \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}}).
-   \end{align}
-   $$
+   $$\frac{\partial \mathcal{L}}{\partial \mathbf{b}} = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}}).$$
 
 
 ```python
@@ -228,53 +224,22 @@ Since our goal is to minimize the loss function and these vectors are pointing t
 The parameter updates are performed iteratively using the following rules:
 
 1. **Weight Update:**
-   $$
-   \mathbf{W} \leftarrow \mathbf{W} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{W}}
-   $$
-   Here, $ \alpha $ is the learning rate, a hyperparameter that controls the step size of each update. The term $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ represents the gradient of the loss function with respect to the weight. By subtracting this scaled gradient from the current weight, we move $ \mathbf{W} $ in the direction that decreases the loss.
+   $$\mathbf{W} \leftarrow \mathbf{W} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{W}}$$
+   Here, $\alpha$ is the learning rate, a hyperparameter that controls the step size of each update. The term $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ represents the gradient of the loss function with respect to the weight. By subtracting this scaled gradient from the current weight, we move $ \mathbf{W} $ in the direction that decreases the loss.
 
 2. **Bias Update:**
-   $$
-   \mathbf{b} \leftarrow \mathbf{b} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{b}}
-   $$
-   Similarly, $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ is the gradient of the loss function with respect to the bias. Updating $ \mathbf{b} $ in this manner adjusts the model's predictions to better fit the data.
+   $$\mathbf{b} \leftarrow \mathbf{b} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{b}}$$
+   Similarly, $\frac{\partial \mathcal{L}}{\partial \mathbf{b}}$ is the gradient of the loss function with respect to the bias. Updating $\mathbf{b}$ in this manner adjusts the model's predictions to better fit the data.
 
 **Intuition Behind the Updates:**
 
-- **Learning Rate $ \alpha $:** The learning rate determines how large a step we take in the direction of the negative gradient. A small $ \alpha $ leads to slow convergence, while a large $ \alpha $ might cause overshooting the minimum, leading to divergence. Choosing an appropriate learning rate is crucial for effective training.
+- **Learning Rate $\alpha$:** The learning rate determines how large a step we take in the direction of the negative gradient. A small $\alpha$ leads to slow convergence, while a large $\alpha$ might cause overshooting the minimum, leading to divergence. Choosing an appropriate learning rate is crucial for effective training.
 
-- **Gradient Direction:** The gradients $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ and $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ indicate the direction in which the loss function increases most rapidly. By moving in the opposite direction (hence the subtraction), we aim to find the parameters that minimize the loss.
+- **Gradient Direction:** The gradients $\frac{\partial \mathcal{L}}{\partial \mathbf{W}}$ and $\frac{\partial \mathcal{L}}{\partial \mathbf{b}}$ indicate the direction in which the loss function increases most rapidly. By moving in the opposite direction (hence the subtraction), we aim to find the parameters that minimize the loss.
 
 We do this over and over again, 2000 times. Each time we do it is referred to as an **epoch**. 
 
 The next step is to update $\mathbf{W}$ and $\mathbf{b}$ to minimize the loss by moving in the direction opposite these gradients. This process is fundamental to optimization algorithms like gradient descent and is known as **backward propogation**.
-
-**Updating the Parameters:**
-
-The parameter updates are performed iteratively using the following rules:
-
-1. **Weight Update:**
-   $$
-   \mathbf{W} \leftarrow \mathbf{W} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{W}}
-   $$
-   Here, $ \alpha $ is the learning rate, a hyperparameter that controls the step size of each update. The term $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ represents the gradient of the loss function with respect to the weight. By subtracting this scaled gradient from the current weight, we move $ \mathbf{W} $ in the direction that decreases the loss.
-
-2. **Bias Update:**
-   $$
-   \mathbf{b} \leftarrow \mathbf{b} - \alpha \frac{\partial \mathcal{L}}{\partial \mathbf{b}}
-   $$
-   Similarly, $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ is the gradient of the loss function with respect to the bias. Updating $ \mathbf{b} $ in this manner adjusts the model's predictions to better fit the data.
-
-**Intuition Behind the Updates:**
-
-- **Learning Rate $ \alpha $:** The learning rate determines how large a step we take in the direction of the negative gradient. A small $ \alpha $ leads to slow convergence, while a large $ \alpha $ might cause overshooting the minimum, leading to divergence. Choosing an appropriate learning rate is crucial for effective training.
-
-- **Gradient Direction:** The gradients $ \frac{\partial \mathcal{L}}{\partial \mathbf{W}} $ and $ \frac{\partial \mathcal{L}}{\partial \mathbf{b}} $ indicate the direction in which the loss function increases most rapidly. By moving in the opposite direction (hence the subtraction), we aim to find the parameters that minimize the loss.
-
-We do this over and over again, 2000 times. Each time we do it is referred to as an **epoch**. 
-
-Below is the path taken during gradient descent. Our initial weight and bias moves along the surface of the loss function in the opposite direction to these gradients.
-
 
 ```python
 import numpy as np
@@ -415,10 +380,10 @@ plt.show()
 # Hidden layers
 We can add some complexity to our model by incorporating *hidden layers*, which allows the model to capture more information about the data than merely a single hidden layer. A hidden layer enables the network to learn intermediate representations and approximate more intricate functions beyond simple linear relationships. 
 
-Let's construct a model with a single hidden layer. The input is mapped into a higher-dimensional space of dimension $\text{input\_size} \times \text{hidden\_dim}$. The architecture will include:
+Let's construct a model with a single hidden layer. The input is mapped into a higher-dimensional space. The architecture will include:
 
 1. **Input layer:** Takes in our $x$-value and passes it to the hidden layer.
-2. **Hidden layer:** Contains multiple neurons, each applying an activation function to introduce non-linearity. For this example, we set the **hidden_dim** to $2$, so our inputs in $\mathbb{R}$ will be mapped into $\mathbb{R}^{1\times 2}$.
+2. **Hidden layer:** Contains multiple neurons, each applying an activation function to introduce non-linearity. For this example, our inputs from $\mathbb{R}^1$ will be mapped into $\mathbb{R}^{1\times 2}$. Here, $2$ is called the **hidden dimension**.
 3. **Output layer:** Produces the final prediction
 
 The layers are connected by an **activation function**. An activation function should satisfy the following criteria:
@@ -462,26 +427,26 @@ To enhance our model's capacity to capture complex patterns, we introduce a hidd
 
 **Mathematical Formulation:**
 
-Given an input $ x \in [0, 10] $, the model $ M $ processes $ x $ as follows:
+Given an input $x \in [0, 10]$, the model $M$ processes $x$ as follows:
 
 1. **Linear Transformation to Hidden Layer:**
-   - Transform the input $ x $ to the hidden layer:
-     $$ z_1 = \mathbf{W} \cdot x + \mathbf{b} $$
+   - Transform the input $x$ to the hidden layer:
+     $$z_1 = \mathbf{W}_i \cdot x + \mathbf{b}_i$$
      where:
-     - $ \mathbf{W} \in \mathbb{R}^{2 \times 1} $ is the weight matrix.
-     - $ \mathbf{b} \in \mathbb{R}^{2 \times 1} $ is the bias vector.
+     - $\mathbf{W}_i \in \mathbb{R}^{2 \times 1}$ is the weight matrix.
+     - $\mathbf{b}_i \in \mathbb{R}^{2 \times 1}$ is the bias vector.
 
 2. **Activation Function:**
-   - Apply the sigmoid activation function element-wise to $ z_1 $:
-     $$ a_1 = \sigma(z_1) = \frac{1}{1 + e^{-z_1}} $$
-     resulting in $ a_1 \in \mathbb{R}^{2 \times 1} $.
+   - Apply the sigmoid activation function element-wise to $z_1$:
+     $$a_1 = \sigma(z_1) = \frac{1}{1 + e^{-z_1}}$$
+     resulting in $a_1 \in \mathbb{R}^{2 \times 1}$.
 
 3. **Output Layer:**
    - Compute the output prediction:
-     $$ y_{\text{pred}} = \mathbf{W}_{\text{out}} \cdot a_1 + b_{\text{out}} $$
+     $$y_{\text{pred}}=\mathbf{W}_o\cdot a_1+b_o$$
      where:
-     - $ \mathbf{W}_{\text{out}} \in \mathbb{R}^{1 \times 2} $ is the weight matrix.
-     - $ b_{\text{out}} \in \mathbb{R} $ is the bias term.
+     - $\mathbf{W}_o \in \mathbb{R}^{1 \times 2}$ is the weight matrix.
+     - $b_o \in \mathbb{R}$ is the bias term.
 
 This formulation ensures that matrix dimensions align correctly during computations, adhering to standard neural network notation. 
 
@@ -544,10 +509,10 @@ for epoch in range(epochs):
     db1 = (1 / m) * np.sum(dZ1, axis=0, keepdims=True)
 
     # Update parameters
-    W1 -= alpha * dW1
-    b1 -= alpha * db1
-    W2 -= alpha * dW2
-    b2 -= alpha * db2
+    W1 = W1 - alpha * dW1
+    b1 = b1 - alpha * db1
+    W2 = W2 - alpha * dW2
+    b2 =  b2 - alpha * db2
 
     # Print loss every 1000 epochs
     if epoch % 1000 == 0:
