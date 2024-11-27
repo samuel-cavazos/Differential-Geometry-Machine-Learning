@@ -4,7 +4,7 @@ DHR Health <br>
 [samuel.cavazos@dhr-rgv.com](mailto:samuel.cavazos@dhr-rgv.com?)
 
 ## Introduction
-The purpose of this work is study the relationship between Machine-Learning and Differential Geometry. By understanding this relationship, we obtain a better understanding of how machine-learning works and gain the ability to apply concepts from differential geometry while building models.
+The purpose of this project is study the relationship between Machine-Learning and Differential Geometry. By understanding this relationship, we obtain a better understanding of how machine-learning works and gain the ability to apply concepts from differential geometry while building models.
 
 
 ## Linear Regression
@@ -659,3 +659,6 @@ plt.show()
 ![png](img/output_25_1.png)
     
 
+# TO-DO    
+    * Expand to multi-dimensional inputs.
+    * Convolutional layers
