@@ -445,9 +445,9 @@ This independence ensures that during inference, when $N = 1$, the same computat
 ### **4. Example with Dimensions**
 Let’s illustrate this with a simple example:
 - **Training:**
-  - $\vec{v} = \begin{bmatrix} 3 \\ 5 \\ 7 \end{bmatrix} \in \mathbb{R}^{3 \times 1} $,
-  - $\mathbf{W}_1 = \begin{bmatrix} 2 & -1 \end{bmatrix} \in \mathbb{R}^{1 \times 2} $,
-  - $\mathbf{b}_1 = \begin{bmatrix} 1 & 0 \end{bmatrix} \in \mathbb{R}^{1 \times 2} $.
+  - $\vec{v} = \begin{bmatrix} 3 \\ 5 \\ 7 \end{bmatrix} \in \mathbb{R}^{3 \times 1}$,
+  - $\mathbf{W}_1 = \begin{bmatrix} 2 & -1 \end{bmatrix} \in \mathbb{R}^{1 \times 2}$,
+  - $\mathbf{b}_1 = \begin{bmatrix} 1 & 0 \end{bmatrix} \in \mathbb{R}^{1 \times 2}$.
 
   Then:
   $$Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1 =
