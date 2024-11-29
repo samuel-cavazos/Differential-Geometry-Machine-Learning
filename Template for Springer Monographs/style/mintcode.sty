@@ -1,0 +1,28 @@
+% mintcode.sty - Custom package for minted-based code formatting
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mintcode}[2024/11/27 Custom Package for Minted Code Formatting]
+
+% Load required packages
+\RequirePackage{minted}
+\RequirePackage{xcolor}
+
+% Define custom colors
+\definecolor{LightGray}{gray}{0.9}
+
+% Define the mintcode environment
+\newenvironment{mintcode}[2][python]{
+    \begin{minted}[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.2,
+        bgcolor=LightGray,
+        fontsize=\footnotesize,
+        linenos
+    ]{#2}
+}{
+    \end{minted}
+}
+
+% End of package
+\endinput
