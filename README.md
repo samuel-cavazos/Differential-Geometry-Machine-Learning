@@ -377,14 +377,31 @@ plt.show()
     
 
 
-# Hidden layers
-We can add some complexity to our model by incorporating *hidden layers*, which allows the model to capture more information about the data than merely a single layer. A hidden layer enables the network to learn intermediate representations and approximate more intricate functions beyond simple linear relationships. 
+# Hidden Layers
 
-Let's construct a model with a single hidden layer. The input is mapped into a higher-dimensional space. The architecture will include:
+We enhance our model by incorporating a **hidden layer**, allowing it to learn intermediate representations and capture more complex patterns in the data.
 
-1. **Input layer:** Takes in our $x$-value and passes it to the hidden layer.
-2. **Hidden layer:** Contains multiple neurons, each applying an activation function to introduce non-linearity. For this example, our inputs from $\mathbb{R}^1$ will be mapped into $\mathbb{R}^{1\times 2}$. Here, $2$ is called the **hidden dimension**.
-3. **Output layer:** Produces the final prediction
+### Model Architecture:
+1. **Input Layer:**
+   - Takes a single real number $x \in \mathbb{R}$ as input.
+   - During training, the inputs are reshaped into a column vector $\vec{v} \in \mathbb{R}^{N \times 1}$, where $N$ is the number of samples (e.g., $N = 200 $).
+
+2. **Hidden Layer:**
+   - The input is transformed to a higher-dimensional space $\mathbb{R}^{N \times d}$, where $d$ is the hidden dimension.
+   - This transformation involves a linear operation followed by a non-linear activation function:
+     $$Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1, \quad A_1 = \sigma(Z_1),$
+     where:
+     - $\mathbf{W}_1 \in \mathbb{R}^{1 \times d}$ (weights),
+     - $\mathbf{b}_1 \in \mathbb{R}^{1 \times d}$ (biases),
+     - $\sigma$ is the activation function (e.g., sigmoid).
+
+3. **Output Layer:**
+   - Maps the hidden representation back to $\mathbb{R}^{N \times 1}$, producing the final prediction:
+     $$y_{\text{pred}} = A_1 \cdot \mathbf{W}_2 + \mathbf{b}_2,$$
+     where:
+     - $\mathbf{W}_2 \in \mathbb{R}^{d \times 1}$ (weights),
+     - $\mathbf{b}_2 \in \mathbb{R}$ (bias term).
+
 
 The layers are connected by an **activation function**. An activation function should satisfy the following criteria:
 
