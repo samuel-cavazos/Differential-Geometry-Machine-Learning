@@ -402,6 +402,109 @@ We enhance our model by incorporating a **hidden layer**, allowing it to learn i
      - $\mathbf{W}_2 \in \mathbb{R}^{d \times 1}$ (weights),
      - $\mathbf{b}_2 \in \mathbb{R}$ (bias term).
 
+### Training with a column vector
+The reason the model can process a single number $x$ during inference (even though it is trained on a column vector) lies in how matrix operations and broadcasting work. Let’s break it down step by step:
+
+---
+
+### **1. Training with a Column Vector**
+During training, the input $x$ is reshaped into a column vector $\vec{v} \in \mathbb{R}^{N \times 1}$, where $N$ is the number of data points. Each row represents one data point. The model operates on all $N$ samples simultaneously by leveraging matrix operations, which are highly efficient for batch processing.
+
+For example:
+1. The input $\vec{v}$ (shape $N \times 1$) is multiplied by the weight matrix $\mathbf{W}_1$ (shape $1 \times d$) to produce:
+   $$Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1,$$
+   where $Z_1 \in \mathbb{R}^{N \times d}$.
+
+2. The result $Z_1$ undergoes element-wise activation and continues through the network.
+
+This **batch processing** is crucial during training, as it allows the model to update weights based on multiple data points in parallel, using methods like stochastic gradient descent (SGD).
+
+### **2. Inference on a Single Input**
+During inference (or testing), the model only receives one data point $x \in \mathbb{R}$. Here's why it still works:
+
+1. **Dimensional Consistency:**
+   - A single number $x \in \mathbb{R}$ is treated as a "mini-batch" of size 1. It is effectively interpreted as $\vec{v} = [x] \in \mathbb{R}^{1 \times 1}$, ensuring that all matrix dimensions remain consistent.
+
+2. **Matrix Multiplications:**
+   - The weight matrix $\mathbf{W}_1$ (shape $1 \times d$) operates on $\vec{v}$ (shape $1 \times 1$):
+     $$Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1,$$
+     where $Z_1 \in \mathbb{R}^{1 \times d}$. The bias $\mathbf{b}_1 \in \mathbb{R}^{1 \times d}$ is broadcasted.
+
+   - The activation and output layers work similarly, maintaining the batch dimension as $1$.
+
+3. **Output:**
+   - The final output $y_{\text{pred}} \in \mathbb{R}^{1 \times 1}$ is a single number, matching the dimensionality of the input.
+
+### **3. Why Training with Batches Works**
+Even though the model is trained on batches (column vectors with $N$ rows), each row is processed **independently** during forward propagation. Specifically:
+- Each row of $\vec{v}$ is treated as a separate data point $x_i$.
+- The weights $\mathbf{W}_1$, biases $\mathbf{b}_1$, and activation functions are applied identically to each row due to matrix operations.
+
+This independence ensures that during inference, when $N = 1$, the same computations apply to a single number $x$ as they did to each $x_i$ during training.
+
+### **4. Example with Dimensions**
+Let’s illustrate this with a simple example:
+- **Training:**
+  - $\vec{v} = \begin{bmatrix} 3 \\ 5 \\ 7 \end{bmatrix} \in \mathbb{R}^{3 \times 1} $,
+  - $\mathbf{W}_1 = \begin{bmatrix} 2 & -1 \end{bmatrix} \in \mathbb{R}^{1 \times 2} $,
+  - $\mathbf{b}_1 = \begin{bmatrix} 1 & 0 \end{bmatrix} \in \mathbb{R}^{1 \times 2} $.
+
+  Then:
+  $$Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1 =
+  \begin{bmatrix}
+  3 \\ 5 \\ 7
+  \end{bmatrix}
+  \cdot
+  \begin{bmatrix}
+  2 & -1
+  \end{bmatrix}
+  +
+  \begin{bmatrix}
+  1 & 0
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+  7 & -3 \\
+  11 & -5 \\
+  15 & -7
+  \end{bmatrix}.$$
+
+- **Inference:**
+  - Input: \( x = 3 \), reshaped as \( \vec{v} = [3] \in \mathbb{R}^{1 \times 1} \),
+  - Same \( \mathbf{W}_1 \) and \( \mathbf{b}_1 \).
+
+  Then:
+  \[
+  Z_1 = \vec{v} \cdot \mathbf{W}_1 + \mathbf{b}_1 =
+  \begin{bmatrix}
+  3
+  \end{bmatrix}
+  \cdot
+  \begin{bmatrix}
+  2 & -1
+  \end{bmatrix}
+  +
+  \begin{bmatrix}
+  1 & 0
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+  7 & -3
+  \end{bmatrix}.
+  \]
+
+The **results are consistent**, whether you process one sample or a batch.
+
+---
+
+### **5. Summary**
+
+- **Batch training** uses vectorized operations over multiple inputs for efficiency.
+- **Inference** on a single input works because matrix operations naturally handle the "mini-batch" case (\( N = 1 \)).
+- The model’s weights and biases remain unchanged, and the same computations apply to a single input \( x \) as they did to each row \( x_i \) in the batch.
+
+This flexibility is one of the strengths of neural networks and matrix-based computation frameworks!
+
 
 The layers are connected by an **activation function**. An activation function should satisfy the following criteria:
 
