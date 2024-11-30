@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%% appendix.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample appendix
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%%%%%%%%%% Springer-Verlag %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\chapter{Python Code}
+\label{introA} % Always give a unique label
+% use \chaptermark{}
+% to alter or adjust the chapter heading in the running headf
+
+\section{Linear Regression}
+
+% Always give a unique label
+% and use \ref{<label>} for cross-references
+% and \cite{<label>} for bibliographic references
+% use \sectionmark{}
+% to alter or adjust the section heading in the running head
+\subsubsection{Code for 3D Gradient Descent Visualization}
+\label{sec:gradient-descent-3d}
+\begin{codeblock}
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Assuming w_history, b_history, loss_history, x, and y_data are already defined
+# Create a grid of w and b values for contour plotting
+w_vals = np.linspace(min(w_history) - 1, max(w_history) + 1, 100)
+b_vals = np.linspace(min(b_history) - 1, max(b_history) + 1, 100)
+W, B = np.meshgrid(w_vals, b_vals)
+
+# Compute the loss for each combination of w and b in the grid
+Z = np.array([mse_loss(linear_model(x, w, b), y_data) for w, b in zip(np.ravel(W), np.ravel(B))])
+Z = Z.reshape(W.shape)
+
+# Create the figure and 3D axis
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the surface
+surf = ax.plot_surface(W, B, Z, cmap='viridis', alpha=0.8)
+
+# Plot the gradient descent path
+ax.plot(w_history, b_history, loss_history, color='red', marker='o', markersize=4, label='Gradient Descent Path')
+
+# Highlight the initial point
+ax.scatter(w_history[0], b_history[0], loss_history[0], color='orange', s=50, label='Initial Point')
+
+# Add labels and a legend
+ax.set_title('Gradient Descent on Loss Surface')
+ax.set_xlabel('Weight (w)')
+ax.set_ylabel('Bias (b)')
+ax.set_zlabel('Loss')
+ax.legend()
+
+plt.savefig('gradient-descent-3d.png')
+# Show the plot
+plt.show()
+
+\end{codeblock}
+
+\subsubsection{Code for Circle Classification Problem Visualizations}
+\label{sec:circle-classification-visualizations}
+\lstinputlisting[language=Python]{Regression/code/A.1.1.2.py}
+
+\subsubsection{Why Training with Batches Works}
+\label{sec:training-with-batches}
+During training, the input $x$ is reshaped into a column vector $\vec{v}\in\mathbb{N\times 1}$, where $N$ is the number of samples. Though our final model will process a single number $x$ during inference. The reason this works lies in how matrix operations and broadcasting work. Let's look at a simple example to gain understanding:
+
+\begin{enumerate}
+    \item \textbf{Training with a column vector:}
+    
+    Let's say we have three univariate data samples:
+    \begin{center}
+    \begin{tabular}{ |c||c|  }
+        x & y \\
+        \hline
+        3 & -1 \\
+        5 & 1 \\
+        7 & 0
+    \end{tabular}
+    \end{center}
+
+    Our goal is to determine the relationship between $x$ and $y$ using a linear model $y = x\cdot W +b$. Let's choose $2$ as the hidden dimension, so that $W,b\in\mathbb{R}^{1\times 2}$. We start by reshaping the input $x$ into a column vector $\vec{v}$:
+    $$\vec{v} = \begin{bmatrix}
+    3 \\ 5 \\ 7 
+    \end{bmatrix}\in \mathbb{R}^{3\times 1}$$
+    We initialize with random weight and bias:
+    $$W_1 = \begin{bmatrix} 2 & -1 & \end{bmatrix} \in \mathbb{R}^{1\times 2}, \quad b_1 = \begin{bmatrix} 1 & 0 \end{bmatrix} \in \mathbb{R}^{1\times 2}.$$
+    Then: 
+    $$Z_1 = \vec{v}\cdot W_1 + b_1 = \begin{bmatrix} 3 \\ 5 \\ 7 \end{bmatrix} \begin{bmatrix} 2 & -1 \end{bmatrix} + \begin{bmatrix} 1 & 0 \end{bmatrix} = \begin{bmatrix} 7 & -3 \\ 11 & -5 \\ 15 & -7 \end{bmatrix}.$$
+
+    \item \textbf{Inference with a single number:}
+    
+    Now that we have a model (an untrained model, but still a model), we can use it to predict the output for a new input $x=3$. We reshape $x$ into a column vector $\vec{v} = \begin{bmatrix}3\end{bmatrix} \in \mathbb{R}^{1\times 1}$ and compute the output:
+    $$Z_1 = \vec{v}\cdot W_1 + b_1 = \begin{bmatrix} 3 \end{bmatrix} \begin{bmatrix} 2 & -1 \end{bmatrix} + \begin{bmatrix} 1 & 0 \end{bmatrix} = \begin{bmatrix} 7 & -3 \end{bmatrix}.$$
+\end{enumerate}

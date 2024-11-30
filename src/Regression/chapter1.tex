@@ -1,0 +1,322 @@
+%%%%%%%%%%%%%%%%%%%%% chapter.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample chapter
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%%%%%%%%%% Springer-Verlag %%%%%%%%%%%%%%%%%%%%%%%%%%
+%\motto{Use the template \emph{chapter.tex} to style the various elements of your chapter content.}
+\chapter{Linear Regression}
+\label{intro} % Always give a unique label
+% use \chaptermark{}
+% to alter or adjust the chapter heading in the running head
+
+\abstract*{
+    This chapter introduces the principles of linear regression as a foundation for understanding the connection between differential geometry and machine learning. A simple linear model $M(x) = x\cdot W + b$ is constructed, and a loss function is used to quantify prediction errors. The chapter details the derivation of gradients for the loss with respect to the model parameters $W$ and $b$, providing insights into how these gradients guide the optimization process.
+}
+
+\abstract{
+    This chapter introduces the principles of linear regression as a foundation for understanding the connection between differential geometry and machine learning. A simple linear model $M(x) = x \cdot W + b$ is constructed, and a loss function is used to quantify prediction errors. The chapter details the derivation of gradients for the loss with respect to the model parameters $W$ and $b$, providing insights into how these gradients guide the optimization process.
+}
+
+\section{Linear Models}
+\label{sec:1}
+Linear regressions are a fundamental tool in statistics and machine learning for modeling the relationship between a dependent variable $y$ and one or more independent variables $x$. The simplest form of linear regression is a univariate linear model\index{linear model, univariate}, which assumes a linear relationship between $y$ and $x$ of the form $y = x\cdot W + b$, where $W,b\in\mathbb{R}$ are real numbers. The model parameters $W$ and $b$ are learned from a dataset of input-output pairs $\{(x_i, y_i)\}_{i=1}^N$ by minimizing a loss function that quantifies the prediction errors of the model. 
+
+A more general form of the linear model is:
+$$M(x) = x\cdot W + b,$$
+where:
+\begin{itemize}
+    \item $W$ is a \textbf{weight matrix} of shape $m \times d$,
+    \item $x$ is a $d$-dimensional input vector,
+    \item $b$ is an $m$-dimensional \textbf{bias vector}.
+\end{itemize}
+
+Here, the model $M(x)$ outputs an $m$-dimensional vector prediction. This flexibility allows linear regression to handle scenarios where the model predicts multiple outputs simultaneously, making it applicable to a wide range of machine learning tasks. We begin by studying the univariate case.
+
+\section{Univariate Linear Models}
+\label{sec:2}
+% Always give a unique label
+% and use \ref{<label>} for cross-references
+% and \cite{<label>} for bibliographic references
+% use \sectionmark{}
+% to alter or adjust the section heading in the running head
+Let's construct some data to work with that follows a somewhat linear trend and build a machine-learning model from scratch. We'll take the function $f(x)=x^2+2\cdot x+1$ over a random sample of points in $[0,10]$ and add some uniform noise.
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.1.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=300pt]{Regression/code/fig1.png}
+\caption{Data generated from the function $f(x)=x^2+2\cdot x+1$ with added noise.}
+\label{fig:linear1}
+\end{figure}
+
+In Figure \ref{fig:linear1}, the \textit{best fit} for this data is the function we used to construct it. Of course, we usually don't know the equation for the best fit beforehand, but our goal is to create a model to approximate this line as closely as possible. 
+
+Let us start by constructing a simple machine-learning model for linear regression with no hidden layers, which essentially means there are no intermediate computations between the input and the output in our model.
+
+Our goal is to build a machine-learning model 
+$M:[0,10]\to\mathbb{R}$ of the form $$M(x) = x \cdot W + b,$$ where $W\in\mathbb{R}$ and $b\in\mathbb{R}$. Here, $W$ is called the **weight** and $b$ is called the **bias**.   
+
+Here, we define our linear model:
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.2.py}
+
+In machine-learning, a model is initialized with random weights and biases, which are then corrected during training by minimizing a **loss function**. Let's start by choosing some random $W$ and $b$.
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.3.py}
+\texttt{\small{Initial weight: -0.21299332372819757 \\
+Initial bias: -0.7532380921958663
+}}
+
+Given that the weight and bias was chosen at random, we don't expect it to perform very well on our data, and indeed that is the case, as shown in Figure \ref{fig:linear2}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=300pt]{Regression/code/fig2.png}
+\caption{Initial model prediction with random weight and bias.}
+\label{fig:linear2}
+\end{figure}
+
+Let's work on improving the model. Improving our model will involve tweaking $W$ and $b$ to better fit the model using a process called \textbf{gradient descent}\index{gradient descent}.
+
+\subsection{Gradient Descent for Univariate Linear Models}
+\label{subsec:2}
+We first define a \textbf{loss function}\index{loss function} to measure how our model is performing. This function will quantify the difference between the model's predictions and the actual data. A common loss function for linear regression is the \textit{Mean Squared Error} (MSE), which is defined as:
+$$\mathcal{L} = MSE = \frac{1}{N}\sum_{i=1}^N\left(y_\text{i,pred} - y_\text{i,true}\right)^2.$$
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.5.py}
+\texttt{50th sample target: 21.729790078081002 \\
+50th prediction: -1.2883971970405839 \\
+Loss at 50th sample: 529.8369454325693 \\
+Total Loss over all samples: 3485.837693509094 
+}
+
+Our goal is to minimize this loss function. 
+
+One thing to note about this loss function is that it is a differentiable function. Recal from vector calculus that the \textbf{gradient}\index{gradient} of a differentiable funtion $f$ is a vector field $\nabla f$ whose value at point $p$ is a vector that points towards the direction of steepest ascent. 
+
+Understanding the gradients of the loss function with respect to the model parameters—specifically, the weight $W$ and bias $b$—is crucial in machine learning, particularly when employing optimization techniques like gradient descent. Our goal is to minimize the loss function. 
+
+The gradients $\frac{\partial \mathcal{L}}{\partial W}$ and $\frac{\partial \mathcal{L}}{\partial b}$ indicate how sensitive the loss function $\mathcal{L}$ is to changes in the parameters $W$ and $b$. In essence, they provide the direction and rate at which $\mathcal{L}$ increases or decreases as we adjust these parameters.
+
+By computing these gradients, we can iteratively update $W$ and $b$ to minimize the loss function, thereby improving the model's performance. This process is the foundation of the gradient descent optimization algorithm.
+
+\subsubsection{Gradients}
+\begin{enumerate}
+    \item \textit{Gradient with Respect to Weight $W$:}
+
+    The partial derivative $\frac{\partial \mathcal{L}}{\partial W}$ measures how the loss changes concerning the weight $W$. A positive derivative suggests that increasing $W$ will increase the loss, while a negative derivative indicates that increasing $W$ will decrease the loss. By moving $W$ in the direction opposite to the gradient, we can reduce the loss.
+
+    If $x_i$ is the i-th data point, let $y_{i,\text{pred}} = W \cdot x_i + b$ be the predicted value for the $i$-th data point while $y_{i,\text{true}}$ denotes the true value. Mathematically, this gradient is computed as:
+    \begin{align*}
+        \frac{\partial \mathcal{L}}{\partial W} &= \frac{\partial}{\partial W}\left( \frac{1}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})^2\right) \nonumber \\
+        & = \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial W}(y_{i,\text{pred}} - y_{i,\text{true}})^2 \qquad \text{(Additive property of derivatives)} \nonumber \\
+        & = \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial W}((W\cdot x_i + b) - y_{i,\text{true}})^2 \nonumber \\
+        & = \frac{1}{N}\sum_{i=1}^N 2\cdot((W\cdot x_i + b) - y_{i,\text{true}})\cdot (x_i) \qquad \text{(Chain rule)} \nonumber \\
+        & = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.
+    \end{align*}
+
+    Thus, we find that 
+    \begin{equation}
+        \frac{\partial \mathcal{L}}{\partial W} = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.
+        \label{eq:gradient_w}
+    \end{equation}
+    
+    \item \textit{Gradient with Respect to Bias $ b $:}
+
+    Similarly, the partial derivative $\frac{\partial \mathcal{L}}{\partial b}$ measures how the loss changes concerning the bias $b$. Adjusting $b$ in the direction opposite to this gradient will also help in minimizing the loss.
+
+    This gradient is computed as:
+    \begin{equation}
+        \frac{\partial \mathcal{L}}{\partial b} = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}}).
+        \label{eq:gradient_b}
+    \end{equation}
+
+    Proof of this equation is left as an exercise to the reader.
+\end{enumerate}
+\pagebreak
+With that, we can compute the gradients in Python:
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.6.py}
+
+Now that we have a way of computing the partial derivatives of $\mathcal{L}$ with respect to $W$ and $b$, we can visualize the \textit{gradient field}\index{gradient field}. For a given $p=(W, b) \in \mathbb{R}^2$, the gradient $\nabla \mathcal{L}$ at $p$ is a vector that points towards the rate of fastest increase. In the following code, we compute these vectors on a grid. We also include a 2D contour plot of the loss function $\mathcal{L}$. Our initial weight $W$ and bias $b$ are marked on the plot by a red dot.
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.7.py}
+
+\begin{figure}
+\centering
+\includegraphics[width=330pt]{Regression/code/gradient-field-1.png}
+\caption{Contour plot of the loss function, gradient field, and gradient descent path.}
+\label{fig:linear3}
+\end{figure}
+
+Since our goal is to minimize the loss function and these vectors are pointing towards the steepest ascent of the loss function with respect to $W$ and $b$, we minimize by moving in the opposite direction of the gradients. This process is fundamental to optimization algorithms like gradient descent and is refered to as \textbf{backpropagation}\index{backpropagation} in the realm of machine-learning.
+
+\subsubsection{Gradient Descent \& Backward Propagation}
+\label{subsubsec:2}
+\textbf{Gradient descent}\index{gradient descent} is an optimization algorithm that iteratively updates the model parameters in the direction opposite to the gradients of the loss function. This process continues until the loss is minimized. \textbf{Backpropagation} is the process of computing these gradients and updating the model parameters.
+
+The parameter updates are performed iteratively using the following rules:
+\begin{enumerate}
+    \item  Weight update:
+    $$W \leftarrow W - \alpha \frac{\partial \mathcal{L}}{\partial W}$$
+   Here, $\alpha$ is the learning rate, a hyperparameter that controls the step size of each update. The term $\frac{\partial \mathcal{L}}{\partial W}$ represents the gradient of the loss function with respect to the weight. By subtracting this scaled gradient from the current weight, we move $ W $ in the direction that decreases the loss.
+
+    \item Bias update:
+    $$b \leftarrow b - \alpha \frac{\partial \mathcal{L}}{\partial b}$$
+    Similarly, $\frac{\partial \mathcal{L}}{\partial b}$ is the gradient of the loss function with respect to the bias. Updating $b$ in this manner adjusts the model's predictions to better fit the data.
+\end{enumerate}
+
+The \textbf{learning rate} determines how large a step we take in the direction of the negative gradient. A small $\alpha$ leads to slow convergence, while a large $\alpha$ might cause overshooting the minimum, leading to divergence. Choosing an appropriate learning rate is crucial for effective training.
+
+The gradients $\frac{\partial \mathcal{L}}{\partial W}$ and $\frac{\partial \mathcal{L}}{\partial b}$ indicate the direction in which the loss function increases most rapidly. By moving in the opposite direction (hence the subtraction), we aim to find the parameters that minimize the loss.
+
+We repeat this process over and over again. Each time we do it is referred to as an \textbf{epoch}\index{epoch}. 
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.8.py}
+
+\texttt{\small{Initial (weight, bias): (-0.21299332372819757, -0.7532380921958663) \\
+Final (weight, bias): (11.160092718469242, -10.114682847750428)
+}}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=330pt]{Regression/code/gradient-field-2.png}
+\caption{Contour plot of the loss function, gradient field, and gradient descent path.}
+\label{fig:linear4}
+\end{figure}
+
+Since our weight $W$ and bias $b$ together form a point $(W,b)\in\mathbb{R}^2$, the loss function $\mathcal{L}$ forms a 3-dimensional surface. The visualization below shows the path taken during gradient descent on the surface of the loss function $\mathcal{L}$. The initial point $(W,b)$ is in green. The path moves towards $\mathcal{L}$'s minimum. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=330pt]{Regression/code/gradient-descent-3d.png}
+\caption{Gradient descent path on the loss function surface. The code used to generate this visualization can be found in \ref{sec:gradient-descent-3d} of the Appendix.}
+\label{fig:linear5}
+\end{figure}
+
+Finally, we visualize our initial (green) and final (red) linear model on a graph, alongside the data and true line of best fit (orange). 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=300pt]{Regression/code/final-model.png}
+\caption{Initial and final linear models compared to the true line of best fit.}
+\label{fig:linear6}
+\end{figure}
+
+\subsection{Univariate Linear Models with Hidden Layers}
+We build upon the ideas from the previous section by incorporating a \emph{hidden layer}\index{hidden layer} into our model, allowing it to learn intermediate representations and capture more complex patters in the data. The reason why we call it a hidden layer is because it is not directly connected to the input or output of the model. This technique involves embedding our data into higher-dimensional spaces. Higher-dimensional spaces allow for the transformation of data in a way that makes patterns, relationships, or structures more linearly separable. In lower dimensions, data that appears entangled or inseparable can often be separated in a higher-dimensional space. 
+
+A classic example that demonstrates the concept of non-linear separability in lower dimensions but linear separability in higher dimensions is the \emph{circle classification problem}. Here, data points inside a circle belong to one class, while those outside belong to another. This problem is not linearly separable in two dimensions, but becomes linearly separable when mapped to higher-dimensional spaces using the radius as a new feature. See \ref{sec:circle-classification-visualizations} in the Appendix for the code used to generate the visualizations below.
+
+% two figures side-by-side
+\begin{figure}[H]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=200pt]{Regression/code/circular-data.png}
+  \caption{Circle classification problem in 2D.}
+  \label{fig:linear7}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=200pt]{Regression/code/circular-data-3d.png}
+  \caption{Circle classification problem in 3D.}
+  \label{fig:linear8}
+\end{minipage}
+\end{figure}
+
+Returning back to our linear model, let's change the model's architecture to include a hidden layer. To summarize the new model architecture:
+\begin{itemize}
+    \item The \textit{input layer} reshapes $x$ into a column vector $\vec{v}\in \mathbb{R}^{N\times 1}$.
+    \item The \textit{hidden layer} maps $\vec{v}$ from $\mathbb{R}^{N\times 1}$ to $Z_1\in\mathbb{R}^{N\times d}$ using a linear transformation and activation function.
+    \item The \textit{output layer} maps the hidden representation in $\mathbb{R}^{N\times d}$ to the final prediction $y_{\text{pred}}\in\mathbb{R}^{N\times 1}$ using a linear transformation.
+\end{itemize}
+
+\begin{enumerate}
+    \item \textbf{Input Layer:}
+    \begin{itemize}
+        \item Takes a single real number $x\in \mathbb{R}$ as input.
+        \item During training, the inputs are reshaped into a column vector $$\vec{v}=\begin{bmatrix}x_1\\x_2\\\vdots\\x_N\end{bmatrix}\in\mathbb{R}^{N\times 1},$$ where $N$ is the number of samples. We call $\vec{v}$ a \emph{batch}. Though we train with batches, inference is done on a single row at a time. 
+        
+        To see why training with batches still allows us to inference on a single row, see \ref{sec:training-with-batches} in the Appendix.
+
+    \end{itemize}
+    \item \textbf{Hidden Layer:}
+    
+    The hidden layer maps the input $\vec{v}$ from $\mathbb{R}^{N\times 1}$ to $Z_1\in\mathbb{R}^{N\times d}$, where $d$ is the hidden dimension.
+    We first perform a linear transformation with the input vector:
+    $$Z_1 = \vec{v}\cdot W_1 + b_1,$$
+    where 
+    \begin{itemize}
+        \item $W_1\in\mathbb{R}^{1\times d}$ is the weight matrix,
+        \item $b_1\in\mathbb{R}^{1\times d}$ is the bias vector.
+        \item $Z_1\in\mathbb{R}^{N\times d}$ is the resulting representation of our vector.
+    \end{itemize}
+    Once the linear transformation is complete, we apply a non-linear activation function to the result. This function introduces non-linearity into the model, allowing it to learn complex patterns in the data:
+    $$ A_1 = \sigma(Z_1), \quad A_1\in\mathbb{R}^{N\times d}.$$
+    We will discuss activation functions in more detail soon.
+
+    \item \textbf{Output Layer:}
+    
+    The hidden layer's output $A_1\in\mathbb{R}^{N\times d}$ is then passed through the output layer, which maps it to the final prediction $y_{\text{pred}}\in\mathbb{R}^{N\times 1}$ using a linear transformation:
+    $$Z_2 = A_1\cdot W_2 + b_2,$$
+    where
+    \begin{itemize}
+        \item $W_2\in\mathbb{R}^{d\times 1}$ is the weight matrix,
+        \item $b_2\in\mathbb{R}^{1\times 1}$ is the bias vector,
+        \item $Z_2\in\mathbb{R}^{N\times 1}$ is the intermediate prediction.
+    \end{itemize}
+    
+    In some applications, $Z_2$ is passed through a final activation function to produce the final prediction $y_{\text{pred}}$, though for simple univariate linear regression, this step is often omitted, so 
+    $$y_{\text{pred}} = Z_2.$$
+
+\end{enumerate}
+
+Layers are connected by an \textbf{activation function}. Activation functions should satisfy the following criteria:
+\begin{itemize}
+    \item \emph{Non-linearity}: The function must be non-linear to allow the model to learn complex patterns.
+    \item \emph{Differentiability}: The function should be differentiable on its domain to faciliate gradient-based optimization methods like backpropagation. When we dive into models over more abstract rings, we will see how this relates to the concept of \emph{derivations} over rings.
+    \item \emph{Bounded output}: Having a bounded output helps in stabilizing the learning process and prevents extreme activations.
+    \item \emph{Monotonicity}: A monotonic function ensures consistent gradients, aiding in stable and efficient training.
+    \item \emph{Computational efficiency}: The function should be computationally efficient to evaluate and differentiate.
+\end{itemize}
+
+A good example of such a function is the \emph{sigmoid} activation function, defined as $$\sigma(z) = \frac{1}{1 + e^{-z}}.$$ This function maps any real number to the range $(0,1)$, making it useful for many regression and classification problems. The sigmoid function is differentiable, monotonic, and computationally efficient, making it a popular choice in neural networks.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=300pt]{Regression/code/sigmoid.png}
+\caption{The sigmoid activation function and its derivative.}
+\label{fig:linear9}
+\end{figure}
+
+Let's implement a univariate linear model with a hidden layer with hidden dimension $d=2$ and a sigmoid activation function. We will use the same data as before.
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.10.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=300pt]{Regression/code/neural-network1.png}
+\caption{Univariate linear model with a single hidden layer of dimension $d=2$. The initial model's state is shown, as well as its final state after training.}
+\label{fig:linear10}
+\end{figure}
+
+As you can see, the model has learned that the data is not linear and has adjusted its weights and biases to better fit the data. 
+
+Now let's train a similar model but with a hidden dimension of $d=10$.
+
+\lstinputlisting[language=Python]{Regression/code/1.1.1.11.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=300pt]{Regression/code/neural-network2.png}
+\caption{Univariate linear model with a single hidden layer of dimension $d=10$. The initial model's state is shown, as well as its final state after training.}
+\label{fig:linear11}
+\end{figure}
+
+As you can see, the higher-dimensional hidden layer allows the model to learn more complex patterns in the data and follows the true line of best fit more closely than the model with $d=2$.
+
+%\input{author/references}

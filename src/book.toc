@@ -1,0 +1,19 @@
+\contentsline {part}{Part\ I\hspace {\betweenumberspace }Regression Models}{1}{}%
+\contentsline {chapter}{\numberline {1}Linear Regression}{3}{}%
+\contentsline {section}{\numberline {1.1}Linear Models}{3}{}%
+\contentsline {section}{\numberline {1.2}Univariate Linear Models}{4}{}%
+\contentsline {subsection}{\numberline {1.2.1}Gradient Descent for Univariate Linear Models}{5}{}%
+\contentsline {subsubsection}{\numberline {1.2.1.1}Gradients}{7}{}%
+\contentsline {subsubsection}{\numberline {1.2.1.2}Gradient Descent \& Backward Propagation}{9}{}%
+\contentsline {subsection}{\numberline {1.2.2}Univariate Linear Models with Hidden Layers}{14}{}%
+\contentsline {chapter}{\numberline {A}Python Code}{23}{}%
+\contentsline {section}{\numberline {A.1}Linear Regression}{23}{}%
+\contentsline {subsubsection}{\numberline {A.1.0.1}Code for 3D Gradient Descent Visualization}{23}{}%
+\contentsline {subsubsection}{\numberline {A.1.0.2}Code for Circle Classification Problem Visualizations}{24}{}%
+\contentsline {subsubsection}{\numberline {A.1.0.3}Why Training with Batches Works}{25}{}%
+\contentsline {chapter}{Glossary}{27}{}%
+\contentsline {paragraph}{Batch}{27}{}%
+\contentsline {paragraph}{Hidden Dimension}{27}{}%
+\contentsline {paragraph}{Hidden Layer}{27}{}%
+\contentsline {paragraph}{Neuron}{27}{}%
+\contentsline {chapter}{Index}{29}{}%
