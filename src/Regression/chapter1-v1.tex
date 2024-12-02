@@ -36,7 +36,12 @@ Here, the model $M(x)$ outputs an $m$-dimensional vector prediction. This flexib
 
 \section{Univariate Linear Models}
 \label{sec:2}
-Let's construct some data to work with that follows a somewhat linear trend and build a machine-learning model from scratch. We'll take the function $f(x)=x^2+2\cdot x+1$ over a random sample of points in $[0,10]$ and add some uniform noise. Next, we'll separate the synthetic data into training and test sets. This will allow us to train the model on the training data and evaluate its performance on the test data. Once we feel confident in the performance of our model, we may train using the entire dataset. For splitting, we'll use the \texttt{train\_test\_split} function from the \texttt{sklearn} library.
+% Always give a unique label
+% and use \ref{<label>} for cross-references
+% and \cite{<label>} for bibliographic references
+% use \sectionmark{}
+% to alter or adjust the section heading in the running head
+Let's construct some data to work with that follows a somewhat linear trend and build a machine-learning model from scratch. We'll take the function $f(x)=x^2+2\cdot x+1$ over a random sample of points in $[0,10]$ and add some uniform noise.
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.1.py}
 
@@ -61,17 +66,17 @@ Here, we define our linear model:
 In machine-learning, a model is initialized with random weights and biases, which are then corrected during training by minimizing a **loss function**. Let's start by choosing some random $W$ and $b$.
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.3.py}
-\texttt{\small{Initial weight: 0.5136609336515561\\
-Initial bias: 0.39026605372156786
+\texttt{\small{Initial weight: -0.21299332372819757 \\
+Initial bias: -0.7532380921958663
 }}
 
 Given that the weight and bias was chosen at random, we don't expect it to perform very well on our data, and indeed that is the case, as shown in Figure \ref{fig:linear2}.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=300pt]{Regression/code/fig2.png}
-    \caption{Initial model prediction with random weight and bias.}
-    \label{fig:linear2}
+\centering
+\includegraphics[width=300pt]{Regression/code/fig2.png}
+\caption{Initial model prediction with random weight and bias.}
+\label{fig:linear2}
 \end{figure}
 
 Let's work on improving the model. Improving our model will involve tweaking $W$ and $b$ to better fit the model using a process called \textbf{gradient descent}\index{gradient descent}.
@@ -82,12 +87,11 @@ We first define a \textbf{loss function}\index{loss function} to measure how our
 $$\mathcal{L} = MSE = \frac{1}{N}\sum_{i=1}^N\left(y_\text{i,pred} - y_\text{i,true}\right)^2.$$
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.5.py}
-\texttt{50th sample target: -3.2562046439706913\\
-50th prediction: 0.7774476620016353\\
-Loss at 50th sample: 16.270350925475867\\
-Total Loss over all samples: 2899.2086153263763
-} 
-\linebreak
+\texttt{50th sample target: 21.729790078081002 \\
+50th prediction: -1.2883971970405839 \\
+Loss at 50th sample: 529.8369454325693 \\
+Total Loss over all samples: 3485.837693509094 
+}
 
 Our goal is to minimize this loss function. 
 
@@ -98,7 +102,6 @@ Understanding the gradients of the loss function with respect to the model param
 The gradients $\frac{\partial \mathcal{L}}{\partial W}$ and $\frac{\partial \mathcal{L}}{\partial b}$ indicate how sensitive the loss function $\mathcal{L}$ is to changes in the parameters $W$ and $b$. In essence, they provide the direction and rate at which $\mathcal{L}$ increases or decreases as we adjust these parameters.
 
 By computing these gradients, we can iteratively update $W$ and $b$ to minimize the loss function, thereby improving the model's performance. This process is the foundation of the gradient descent optimization algorithm.
-
 
 \subsubsection{Gradients}
 \begin{enumerate}
@@ -133,7 +136,7 @@ By computing these gradients, we can iteratively update $W$ and $b$ to minimize 
 
     Proof of this equation is left as an exercise to the reader.
 \end{enumerate}
-
+\pagebreak
 With that, we can compute the gradients in Python:
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.6.py}
@@ -143,12 +146,12 @@ Now that we have a way of computing the partial derivatives of $\mathcal{L}$ wit
 \lstinputlisting[language=Python]{Regression/code/1.1.1.7.py}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=330pt]{Regression/code/gradient-field-1.png}
-    \caption{Contour plot of the loss function, gradient field, and gradient descent path.}
-    \label{fig:linear3}
+\centering
+\includegraphics[width=330pt]{Regression/code/gradient-field-1.png}
+\caption{Contour plot of the loss function, gradient field, and gradient descent path.}
+\label{fig:linear3}
 \end{figure}
-    
+
 Since our goal is to minimize the loss function and these vectors are pointing towards the steepest ascent of the loss function with respect to $W$ and $b$, we minimize by moving in the opposite direction of the gradients. This process is fundamental to optimization algorithms like gradient descent and is refered to as \textbf{backpropagation}\index{backpropagation} in the realm of machine-learning.
 
 \subsubsection{Gradient Descent \& Backward Propagation}
@@ -174,15 +177,15 @@ We repeat this process over and over again. Each time we do it is referred to as
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.8.py}
 
-\texttt{\small{Initial (weight, bias): (0.5136609336515561, 0.39026605372156786)\\
-Final (weight, bias): (10.472640107432522, -5.487933673141372)
+\texttt{\small{Initial (weight, bias): (-0.21299332372819757, -0.7532380921958663) \\
+Final (weight, bias): (11.160092718469242, -10.114682847750428)
 }}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=330pt]{Regression/code/gradient-field-2.png}
-    \caption{Contour plot of the loss function, gradient field, and gradient descent path.}
-    \label{fig:linear4}
+\centering
+\includegraphics[width=330pt]{Regression/code/gradient-field-2.png}
+\caption{Contour plot of the loss function, gradient field, and gradient descent path.}
+\label{fig:linear4}
 \end{figure}
 
 Since our weight $W$ and bias $b$ together form a point $(W,b)\in\mathbb{R}^2$, the loss function $\mathcal{L}$ forms a 3-dimensional surface. The visualization below shows the path taken during gradient descent on the surface of the loss function $\mathcal{L}$. The initial point $(W,b)$ is in green. The path moves towards $\mathcal{L}$'s minimum. 
@@ -210,19 +213,19 @@ A classic example that demonstrates the concept of non-linear separability in lo
 
 % two figures side-by-side
 \begin{figure}[H]
-    \centering
-    \begin{minipage}{.5\textwidth}
-      \centering
-      \includegraphics[width=200pt]{Regression/code/circular-data.png}
-      \caption{Circle classification problem in 2D.}
-      \label{fig:linear7}
-    \end{minipage}%
-    \begin{minipage}{.5\textwidth}
-      \centering
-      \includegraphics[width=200pt]{Regression/code/circular-data-3d.png}
-      \caption{Circle classification problem in 3D.}
-      \label{fig:linear8}
-    \end{minipage}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=200pt]{Regression/code/circular-data.png}
+  \caption{Circle classification problem in 2D.}
+  \label{fig:linear7}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=200pt]{Regression/code/circular-data-3d.png}
+  \caption{Circle classification problem in 3D.}
+  \label{fig:linear8}
+\end{minipage}
 \end{figure}
 
 Returning back to our linear model, let's change the model's architecture to include a hidden layer. To summarize the new model architecture:
@@ -295,10 +298,10 @@ Let's implement a univariate linear model with a hidden layer with hidden dimens
 \lstinputlisting[language=Python]{Regression/code/1.1.1.10.py}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=300pt]{Regression/code/neural-network1.png}
-    \caption{Univariate linear model with a single hidden layer of dimension $d=2$. The initial model's state is shown, as well as its final state after training.}
-    \label{fig:linear10}
+\centering
+\includegraphics[width=300pt]{Regression/code/neural-network1.png}
+\caption{Univariate linear model with a single hidden layer of dimension $d=2$. The initial model's state is shown, as well as its final state after training.}
+\label{fig:linear10}
 \end{figure}
 
 As you can see, the model has learned that the data is not linear and has adjusted its weights and biases to better fit the data. 
@@ -314,10 +317,10 @@ Now let's train a similar model but with a hidden dimension of $d=10$.
 \label{fig:linear11}
 \end{figure}
 
-As you can see, the higher-dimensional hidden layer allows the model to learn more complex patterns in the data and follows the true line of best fit more closely than the model with $d=2$. Furthermore, it also performs well on the test data which was excluded during training. 
+As you can see, the higher-dimensional hidden layer allows the model to learn more complex patterns in the data and follows the true line of best fit more closely than the model with $d=2$.
 
 \section{Multivariate Linear Models}
-The next step in our journey is the multivariate linear model with no hidden layers. This model is an extension of the univariate model, allowing for multiple input features. The model definition is the same as that of the univarite case:
+The next step in our journey is the multivariate linear model. This model is an extension of the univariate model, allowing for multiple input features. The model definition is the same as that of the univarite case:
 $$M(x) = x\cdot W + b,$$
 where:
 \begin{itemize}
@@ -327,166 +330,91 @@ where:
 \end{itemize}
 If we $n$ samples with $d$ features each, we can represent the input data as a matrix $X\in\mathbb{R}^{n\times d}$, where each row $X_i$ represents a sample. 
 
-In the previous section, we utilized concepts from differential geometry to minimize the loss function and visualize the process of gradient descent. This was feasible since the model was simple and the loss function was differentiable. However, as we move to more complex models, we may not have the luxury offered by real-valued functions. 
+In the previous section, we utilized differential geometry to visualize the process of gradient descent. I would like to begin this section by introducing the concept of rings and modules. Rings are algebraic structures that generalize the properties of the integers. Modules are algebraic structures that generalize the properties of vector spaces. This framework will allow us to abstract the concepts of linear regression and neural networks into a more general setting.
 
-Let's look at the \emph{Tips} dataset from the \texttt{seaborn} package as an example.
+\subsection{Rings and Modules}
+Rings are algebraic structures that generalize the properties of familiar number systems, such as the integers $\mathbb{Z}$ or real numbers $\mathbb{R}$. In machine learning, our data often includes features that don't naturally fit into these familiar linear structures. For example, time exhibits a cyclic structure: after 23 o'clock, the next hour is 0 o'clock. This periodicity makes time inherently different from the real line, where numbers extend indefinitely in both directions. Treating time as a linear quantity (e.g., mapping hours to integers) ignores this cyclic nature and risks introducing artificial discontinuities, such as a large gap between 23 and 0.
 
-\begin{codeblock}
-# %!pip install seaborn
+Most machine-learning models embed such features into the real numbers or integers because this approach is straightforward and leverages well-established tools for optimization and modeling. However, this simplification comes at a cost: it may obscure the underlying structure of the data, leading to inefficiencies or inaccuracies in the model. For instance, a model treating time linearly might struggle to recognize patterns that depend on the cyclic relationships between hours.
 
-# Import iris dataset using seaborn
-import seaborn as sns
-data = sns.load_dataset('tips')
+Ring theory offers a way to represent and work directly with the natural structure of such features. By using modular arithmetic, we can encode the cyclic nature of time seamlessly within a ring, such as $\mathbb{Z}/\mathbb{Z}_{24}$, the integers modulo 24, for a 24-hour clock. This approach aligns the model's representation of time with its real-world behavior, potentially improving the model's interpretability and performance.
 
-data
-\end{codeblock}
+In this section, we will begin with this more abstract approach, leveraging \textbf{ring theory}\index{ring theory} to explore how cyclic structures can be modeled naturally. Toward the end, we will revisit the common practice of embedding such features into real numbers or integers, understanding its limitations and trade-offs.
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{lrrllllr}
-        \toprule
-        & total\_bill & tip & sex & smoker & day & time & size \\
-        \midrule
-        242 & 17.82 & 1.75 & Male & No & Sat & Dinner & 2 \\
-        73 & 25.28 & 5.00 & Female & Yes & Sat & Dinner & 2 \\
-        43 & 9.68 & 1.32 & Male & No & Sun & Dinner & 2 \\
-        86 & 13.03 & 2.00 & Male & No & Thur & Lunch & 2 \\
-        105 & 15.36 & 1.64 & Male & Yes & Sat & Dinner & 2 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Sample data from \texttt{seaborn}'s \emph{Tips} dataset}
-    \label{tab:sample_data}
-\end{table}
+\subsection*{Why Use Rings Instead of Embedding in Real Numbers or Integers?}
 
-Our goal is the predict the tip amount based on the information available. The first thing you'll notice is that this dataset contains non-numerical features. How would we include such features in our model?
+\emph{Natural Alignment with Data Structure:} Rings like $\mathbb{Z}_{n}$ naturally encode cyclic structures, preserving the periodic relationships inherent in data such as time or phases. Linear embeddings, by contrast, treat these relationships as discontinuities.
 
-\subsection{Encoding Categorical Data}
-\label{subsec:3}
+\emph{Efficiency and Interpretability:} Directly modeling cyclic structures using rings avoids unnecessary complexity in feature engineering or model design. For example, representing time in $\mathbb{Z}_{24}$ eliminates the need for additional features like sine and cosine transformations commonly used to encode periodicity.
 
-Since our machine-learning algorithm works with numerical data, we need to convert the categorical data in the dataset into a numerical format. Two common techniques for this are \textbf{one-hot encoding} and \textbf{label encoding}.
+\emph{Theoretical Rigor:} Ring theory provides a rich algebraic framework that aligns well with many problems involving modular arithmetic, symmetry, or other non-linear structures in data.
 
-One might numerically encode the \texttt{day} column so that Sunday is 0, Monday is 1, and so on. In doing so, you are defining an \emph{encoding}, a numerical representation of the string. Your encoding is ordered in a sense. But when dealing with more general categorical data, we don't always have a natural ordering. Once we touch on the concept of \emph{Rings}, we will see that the days of the week form a ring under addition modulo 7, denoted $\Z/\Z_7$. For now, we will proceed not as mathematicians but as machine-learning engineers.
+\emph{Avoiding Distortions:} Embedding cyclic structures into real numbers can distort distances and relationships, especially at boundaries (e.g., treating 0 and 23 as far apart when they are adjacent). Rings inherently respect these relationships.
 
-\begin{definition}
-    An \textbf{embedding}\index{embedding} is a structure-preserving map from one mathematical object to another. $X$ is said to be embedded in $Y$ if there exists an injective function $f:X\to Y$ such that $f(x)=f(y)$ if and only if $x=y$. 
-\end{definition}
+By exploring this ring-theoretic perspective, we can gain insights into the algebraic foundations of modeling cyclic data, ultimately enriching our understanding of both abstract algebra and its practical applications in machine learning.
 
-\subsubsection{Label Encoding Categorical Data}
+\subsection{Time as a Ring}
 
-\textbf{Label Encoding}\index{label encoding} is a technique that assigns a unique integer to each category in the data. This method is simpler than one-hot encoding but may introduce an ordinal relationship between the categories that does not exist in the data. In essense, we are creating an embedding of the categorical data into $\Z$, the integers.
+It is often more natural to represent time using a ring, where the hours of the day form the elements of the ring $\mathbb{Z}/\mathbb{Z}_{24}$—the set of integers modulo $24$. This structure captures the cyclic nature of time, where 0 o’clock and 24 o’clock are treated as the same. You may also encounter the shorthand $\mathbb{Z}_{24}$ to refer to this ring, although this notation is sometimes used for $p$-adic integers, leading to confusion among mathematicians.
 
-You can also encode the \texttt{day} column in the \emph{Tips} dataset using \texttt{scikit-learn}'s \texttt{LabelEncoder}:
-\lstinputlisting[language=Python]{Regression/code/1.3.1.1.py}
+The ring $\mathbb{Z}/\mathbb{Z}_{24}$ consists of equivalence classes of integers modulo $24$. We denote the equivalence class of an integer \( a \) by \([a]\). Two integers \( a \) and \( b \) are considered equivalent modulo $24$ if their difference is divisible by $24$, which we write as \( a \equiv b \pmod{24} \). For example, \( 24 \equiv 0 \pmod{24} \), meaning $[24]$ and $[0]$ are the same.
 
-\begin{table}[ht]
-    \centering 
-    \begin{tabular}{rrllllrr}
-        \toprule
-        total\_bill & tip & sex & smoker & day & time & size & day\_LabelEncoded \\
-        \midrule
-        17.59 & 2.64 & Male & No & Sat & Dinner & 3 & 1 \\
-        38.07 & 4.00 & Male & No & Sun & Dinner & 3 & 2 \\
-        22.76 & 3.00 & Male & No & Thur & Lunch & 2 & 3 \\
-        13.81 & 2.00 & Male & No & Sun & Dinner & 2 & 2 \\
-        23.95 & 2.55 & Male & No & Sun & Dinner & 2 & 2 \\
-        \bottomrule
-    \end{tabular}               
-\end{table}
+\subsubsection*{Arithmetic in the Ring}
 
-The result is \texttt{day\_LabelEncoded}, a new column that contains the encoded values for the \texttt{day} column. However, this encoding method introduces an ordinal relationship between the days that does not exist in the data. For example, Thursday was encoded as $3$ while Friday was encoded as $0$. Ths embedding doesn't preserve the ordered structure of the days of the week.
+In this ring, we can add and multiply equivalence classes to obtain a new equivalence class. For instance:
+$$[3] + [5] = [8], \quad [3] \cdot [5] = [15],$$
+but
+$$[3] \cdot [11] = [9],$$
+since $3 \cdot 11 = 33$ and $33 - 9 = 24$, which is divisible by $24$. Thus, $33 \equiv 9 \pmod{24}$.
 
-\subsubsection{{Ordinal Encoding Categorical Data}}
+This structure allows us to perform arithmetic that respects the cyclic nature of time. For example, adding 5 hours to 22 o’clock gives $[22] + [5] = [27] = [3]$, meaning the time wraps back to 3 o’clock.
 
-\textbf{Ordinal Encoding}\index{ordinal encoding} is similar to label encoding, but assigns an integer to each category in the data based on the order in which they appear. This method preserves the ordinal relationship between the categories but may introduce an artificial ranking that does not exist in the data.
-\lstinputlisting[language=Python]{Regression/code/1.3.1.3.py}
+\subsubsection*{Key Properties of Rings}
 
-\begin{table}[ht]
-    \centering 
-    \begin{tabular}{rrllllrrr}
-        \toprule
-        total\_bill & tip & sex & smoker & day & time & size & day\_LabelEncoded & day\_OrdinalEncoded \\
-        \midrule
-        15.42 & 1.57 & Male & No & Sun & Dinner & 2 & 2 & 3 \\
-        48.33 & 9.00 & Male & No & Sat & Dinner & 4 & 1 & 2 \\
-        7.74 & 1.44 & Male & Yes & Sat & Dinner & 2 & 1 & 2 \\
-        18.64 & 1.36 & Female & No & Thur & Lunch & 3 & 3 & 0 \\
-        34.65 & 3.68 & Male & Yes & Sun & Dinner & 4 & 2 & 3 \\
-        \bottomrule
-    \end{tabular}           
-\end{table}
+Before formally defining a ring, let’s observe some key properties of $\mathbb{Z}/\mathbb{Z}_{24}$:
 
-This does a better job at capturing the ordinal relationship between the days of the week since now Thursday comes before Friday. Still, it doesn't capture the cyclical nature of the days of the week. At the end of the week, we return to the beginning of the week, but our embedding doesn't reflect this. This is because our data inherits the structure of the ring we have embedded it in. In this case, we have embedded the days of the week in $\Z$, the integers, which is not cyclical. 
-    
+\begin{itemize}
+    \item \emph{Additive Identity:} The equivalence class $[0]$ acts as an additive identity, meaning \([a] + [0] = [a]\) for any \( a \in \mathbb{Z} \). Adding by 24 is equivalent to adding by 0 since $[24] = [0]$.
+    \item \emph{Multiplicative Identity:} The equivalence class \([1]\) acts as a multiplicative identity, meaning \([a] \cdot [1] = [a]\). 
+    \item \emph{Additive Inverses:} For every \([a]\), there is an additive inverse \([-a]\) such that \([a] + [-a] = [0]\).
+\end{itemize}
 
-There is a third approach we could take: \emph{one-hot encoding}. It is a mathematically interesting approach.
+However, not all elements have multiplicative inverses. For example, in $\mathbb{Z}/\mathbb{Z}_{24}$, \([2]\) does not have an inverse because there is no \([b]\) such that \([2] \cdot [b] = [1]\). When every nonzero element of a ring has a multiplicative inverse, the ring is called a \textbf{field}\index{Field}. The real numbers \(\mathbb{R}\) form a field, but the integers \(\mathbb{Z}\) do not, as \(\mathbb{Z}\) does not contain inverses like \(1/2\).
 
-\subsubsection{One-Hot Encoding Categorical Data}
-\textbf{One-Hot Encoding}\index{one-hot encoding} is a technique that creates a binary column for each category in the data. Each column represents a category, and a 1 in that column indicates the presence of the category in the data. This method preserves the categorical nature of the data without introducing an ordinal relationship between the categories.
+\subsection{Definition of a Ring}
 
-\lstinputlisting[language=Python]{Regression/code/1.3.1.2.py}
-
-\begin{table}[ht]
-    \centering 
-    \begin{tabular}{rrllllrrrrr}
-        \toprule
-        total\_bill & tip & sex & smoker & day & time & size & day\_Thur & day\_Fri & day\_Sat & day\_Sun \\
-        \midrule
-        12.60 & 1.00 & Male & Yes & Sat & Dinner & 2 & 0 & 0 & 1 & 0 \\
-        13.42 & 1.68 & Female & No & Thur & Lunch & 2 & 1 & 0 & 0 & 0 \\
-        10.07 & 1.83 & Female & No & Thur & Lunch & 1 & 1 & 0 & 0 & 0 \\
-        23.95 & 2.55 & Male & No & Sun & Dinner & 2 & 0 & 0 & 0 & 1 \\
-        16.43 & 2.30 & Female & No & Thur & Lunch & 2 & 1 & 0 & 0 & 0 \\
-        \bottomrule
-        \end{tabular}
-\end{table}    
-
-One-hot encoding the day column resulted in four new columns, each representing a day of the week. For \texttt{day\_Fri}, a 1 indicates that the day is Friday, while 0 indicates that it is not. Thursday is represented by $(1,0,0,0)$, Friday by $(0,1,0,0)$, and so on.
-
-This method preserves the categorical nature of the data without introducing an ordinal relationship between the categories. This still doesn't capture the cyclic nature of the days of the week, but it does a better job at separating the days of the week into distinct categories without introducing an ordinal relationship between them.
-
-\subsubsection{Encoding using Rings}
-Let's now approach encoding categorical data from a more abstract perspective. Let's begin by defining a \emph{ring}.
+With these examples in mind, we can now formally define a ring.
 
 \begin{definition}
-    A \textbf{ring}\index{ring} is a set $R$ equipped with two binary operations $+$ and $\cdot$ such that:
+    A \textbf{ring}\index{Ring} is a set $R$ equipped with two binary operations $+$ and $\cdot$ such that:
     \begin{enumerate}
-        \item $(R,+)$ is an abelian group, i.e.
+        \item $(R, +)$ is an abelian group, i.e. it satisfies the following properties:
         \begin{itemize}
-            \item $(a+b)+c = a+(b+c)$ for all $a,b,c\in R$ (associativity of addition),
-            \item $a+b = b+a$ for all $a,b\in R$ (commutativity of addition),
+            \item $(a+b)+c = a+(b+c)$ for all $a,b,c\in $ (associative property),
+            \item $a+b = b+a$ for all $a,b\in R$ (commutative property),
             \item There exists an element $0\in R$ such that $a+0 = a$ for all $a\in R$ (additive identity),
-            \item For every $a\in R$, there exists an element $-a\in R$ such that $a+(-a) = 0$ (additive inverse).
+            \item For each $a\in R$, there exists an element $-a\in R$ such that $a+(-a) = 0$ (inverse property).
         \end{itemize}
-        \item $(R,\cdot)$ is a monoid, i.e.
+        \item $(R, \cdot)$ is a monoid, i.e. it satisfies the following properties:
         \begin{itemize}
-            \item $(a\cdot b)\cdot c = a\cdot(b\cdot c)$ for all $a,b,c\in R$ (associativity of multiplication),
+            \item $(a\cdot b)\cdot c = a\cdot (b\cdot c)$ for all $a,b,c\in R$ (associative property),
             \item There exists an element $1\in R$ such that $a\cdot 1 = a$ for all $a\in R$ (multiplicative identity).
         \end{itemize}
-        \item Multiplication distributes over addition: 
+        \item Multiplication is distributive over addition, meaning:
         \begin{itemize}
-            \item $a\cdot(b+c) = a\cdot b + a\cdot c$ for all $a,b,c\in R$ (left distributivity).
-            \item $(a+b)\cdot c = a\cdot c + b\cdot c$ for all $a,b,c\in R$ (right distributivity).
+            \item $a\cdot (b+c) = a\cdot b + a\cdot c$ for all $a,b,c\in R$ (left distributive property),
+            \item $(a+b)\cdot c = a\cdot c + b\cdot c$ for all $a,b,c\in R$ (right distributive property).
         \end{itemize}
     \end{enumerate}
 \end{definition}
 
-\begin{example}
-    The integers $\Z$ form a ring under addition and multiplication. The integers modulo $n$, denoted $\Z/n\Z$, also form a ring under addition and multiplication modulo $n$.
-\end{example}
+Modules are algebraic structures that generalize the properties of vector spaces. This framework will allow us to abstract the concepts of linear regression and neural networks into a more general setting.
 
-\begin{example}
-    The abelian group $\Z/\Z_2$, the integers modulo $2$, forms a ring under addition and multiplication modulo $2$. Two elements, $[x],[y]\in\Z/\Z_2$, are equivalent in $\Z/\Z_2$ if $x-y$ is divisible by $2$. For example, $[3]=[1]$ in $\Z/\Z_2$ since $3-1=2$ is divisible by $2$.
-    
-    When context is clear, we drop the brackets around the equivalence classes and write $x$ instead of $[x]$, which leads to the infamous:
-    $$1 + 1 = 0.$$ Since $1 + 1 = 2$ over $\Z$ and $2 - 0=2$ is divisible by $2$, the equivalence classes $[2]=[0]$ are the same so that $[1]+[1]=[0]$ in $\Z/\Z_2$.
-\end{example}
+In the univariate case, we worked with gradients to optimize our models. How would we take a derivative when working in the ring $\mathbb{Z}/\mathbb{Z}_24$? 
 
-The previous example is a ring with only two elements. Recall the one-hot encoding of the days of the week: Thursday was encoded as $(1,0,0,0)$, Friday as $(0,1,0,0)$, and so on. Each slot in the vector is either a $0$ or a $1$, depending on what is being encoded. This encoding embeds our categorical data into the direct product of rings:
-$$
-\prod_{i=1}^c \Z/\Z_2,
-$$
-where $c$ is the number of categories. 
+Most machine-learning models handle this by treating the data as if it were in $\mathbb{R}$. The feature is 
 
-Some might refer to this as a direct sum, but this terminology should be avoided in the context of rings. While $\bigoplus_{i=1}^c \Z/\Z_2$ is valid in the category of abelian groups, in ring theory, the direct sum and direct product differ. Though for finite rings, the direct sum and direct product coincide.
 
-The \emph{direct sum} and \emph{direct product} are two closely related constructions that differ primarily in the context of infinite indexing sets. However, their behavior can diverge even for finite cases when we are careful about their definitions in different categories, such as rings or abelian groups (see \ref{sec:direct-sum-vs-direct-product} in the Appendix for more information).
+In the multivariate case, we will work with \textbf{derivations}\index{derivation} over rings. Derivations are a generalization of gradients that allow us to optimize models over more abstract structures. Derivations behave very similarly to gradients. 
+
+%\input{author/references}

@@ -1,11 +1,16 @@
 \indexentry{acronyms, list of}{xiii}
 \indexentry{symbols, list of}{xiii}
 \indexentry{linear model, univariate}{3}
-\indexentry{gradient descent}{5}
-\indexentry{loss function}{5}
-\indexentry{gradient}{6}
+\indexentry{gradient descent}{6}
+\indexentry{loss function}{6}
+\indexentry{gradient}{7}
 \indexentry{gradient field}{8}
-\indexentry{backpropagation}{9}
-\indexentry{gradient descent}{9}
-\indexentry{epoch}{10}
+\indexentry{backpropagation}{10}
+\indexentry{gradient descent}{10}
+\indexentry{epoch}{11}
 \indexentry{hidden layer}{14}
+\indexentry{embedding}{23}
+\indexentry{label encoding}{23}
+\indexentry{ordinal encoding}{23}
+\indexentry{one-hot encoding}{24}
+\indexentry{ring}{25}

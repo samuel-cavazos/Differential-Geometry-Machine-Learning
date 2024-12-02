@@ -19,7 +19,7 @@
 % and \cite{<label>} for bibliographic references
 % use \sectionmark{}
 % to alter or adjust the section heading in the running head
-\subsubsection{Code for 3D Gradient Descent Visualization}
+\subsection{Code for 3D Gradient Descent Visualization}
 \label{sec:gradient-descent-3d}
 \begin{codeblock}
 import numpy as np
@@ -62,11 +62,11 @@ plt.show()
 
 \end{codeblock}
 
-\subsubsection{Code for Circle Classification Problem Visualizations}
+\subsection{Code for Circle Classification Problem Visualizations}
 \label{sec:circle-classification-visualizations}
 \lstinputlisting[language=Python]{Regression/code/A.1.1.2.py}
 
-\subsubsection{Why Training with Batches Works}
+\subsection{Why Training with Batches Works}
 \label{sec:training-with-batches}
 During training, the input $x$ is reshaped into a column vector $\vec{v}\in\mathbb{N\times 1}$, where $N$ is the number of samples. Though our final model will process a single number $x$ during inference. The reason this works lies in how matrix operations and broadcasting work. Let's look at a simple example to gain understanding:
 
@@ -98,3 +98,22 @@ During training, the input $x$ is reshaped into a column vector $\vec{v}\in\math
     Now that we have a model (an untrained model, but still a model), we can use it to predict the output for a new input $x=3$. We reshape $x$ into a column vector $\vec{v} = \begin{bmatrix}3\end{bmatrix} \in \mathbb{R}^{1\times 1}$ and compute the output:
     $$Z_1 = \vec{v}\cdot W_1 + b_1 = \begin{bmatrix} 3 \end{bmatrix} \begin{bmatrix} 2 & -1 \end{bmatrix} + \begin{bmatrix} 1 & 0 \end{bmatrix} = \begin{bmatrix} 7 & -3 \end{bmatrix}.$$
 \end{enumerate}
+
+\subsection{Direct Sum vs. Direct Product of Rings}
+\label{sec:direct-sum-vs-direct-product}
+\begin{definition}
+    The \textbf{direct product} of two rings $R$ and $S$, written $R\times S$, is the Cartesian product of their elements with componentwise addition and multiplication:
+    $$(r_1, s_1) + (r_2, s_2) = (r_1 + r_2, s_1 + s_2), \quad (r_1, s_1) \cdot (r_2, s_2) = (r_1 \cdot r_2, s_1 \cdot s_2).$$
+    This results in a new ring $R\times S$, where $R$ and $S$ are naturally embedded as subrings:
+    $$R \hookrightarrow R \times S, \quad r \mapsto (r, 0), \quad S \hookrightarrow R \times S, \quad s \mapsto (0, s).$$
+    \end{definition}
+    
+    For finite sets, the direct product is the same as the direct sum. For infinite sets, the direct product contains **all possible tuples**, even those with infinitely many nonzero entries, which is not allowed in the direct sum.
+    
+    \begin{definition}
+    The \textbf{direct sum} of two rings $R$ and $S$, written $R\bigoplus S$, is also the cartesian product of their elements, but with an additional restriction: in the context of abelian groups, only \textit{finitely many components are allowed to be nonzero} in the infinite case. 
+    \end{definition}
+    
+    In the context of rings, $R\bigoplus S$ is typically defined the same as $R\times S$ for finite cases since the restriction is automatically satisfied.
+    
+    In machine-learning, we are mostly working with a finite number of categorical variables, so the direct sum and direct product coincide.

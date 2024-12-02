@@ -6,18 +6,19 @@
   \indexspace
 {\bf B}\nopagebreak%
  \indexspace\nopagebreak%
-  \item backpropagation\idxquad 9
+  \item backpropagation\idxquad 10
 
   \indexspace
 {\bf E}\nopagebreak%
  \indexspace\nopagebreak%
-  \item epoch\idxquad 10
+  \item embedding\idxquad 23
+  \item epoch\idxquad 11
 
   \indexspace
 {\bf G}\nopagebreak%
  \indexspace\nopagebreak%
-  \item gradient\idxquad 6
-  \item gradient descent\idxquad 5,\,9
+  \item gradient\idxquad 7
+  \item gradient descent\idxquad 6,\,10
   \item gradient field\idxquad 8
 
   \indexspace
@@ -28,8 +29,20 @@
   \indexspace
 {\bf L}\nopagebreak%
  \indexspace\nopagebreak%
+  \item label encoding\idxquad 23
   \item linear model, univariate\idxquad 3
-  \item loss function\idxquad 5
+  \item loss function\idxquad 6
+
+  \indexspace
+{\bf O}\nopagebreak%
+ \indexspace\nopagebreak%
+  \item one-hot encoding\idxquad 24
+  \item ordinal encoding\idxquad 23
+
+  \indexspace
+{\bf R}\nopagebreak%
+ \indexspace\nopagebreak%
+  \item ring\idxquad 25
 
   \indexspace
 {\bf S}\nopagebreak%

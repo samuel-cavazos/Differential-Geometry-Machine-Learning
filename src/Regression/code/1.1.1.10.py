@@ -69,12 +69,15 @@ Z2 = np.dot(A1, W2) + b2
 y_pred = Z2
 
 # Plotting
-plt.scatter(x, y_data, label='Noisy Data', color='blue', alpha=0.5)
+plt.figure(figsize=(10, 5))
+plt.plot(x, y_true, color='black', label='True function')
+plt.scatter(x_train, y_train, color='darkred', label='Training data')
+plt.scatter(x_test, y_test, color='blue', label='Test data')
 plt.plot(x, y_pred_initial, label='Initial Model Prediction', color='orange')
-plt.plot(x, y_true, label='True Function', color='green')
 plt.plot(x, y_pred, label='Model Prediction', color='red')
 plt.xlabel('Input Feature')
 plt.ylabel('Target Value')
 plt.title('Neural Network with One Hidden Layer')
 plt.legend()
+plt.savefig('neural-network1.png')
 plt.show()
