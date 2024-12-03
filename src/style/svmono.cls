@@ -880,22 +880,22 @@ passing it to article class \MessageBreak
 \newcommand{\upi}{\allmodesymb{\greeksym}{p}}
 \newcommand{\utau}{\allmodesymb{\greeksym}{t}}
 % redefines the \vec accent to a bold character - if desired
-\def\fig@type{arrow}% temporarily abused
-\AtBeginDocument{\ifx\vec@style\fig@type\else
-\@ifundefined{vec@style}{%
- \def\vec#1{\ensuremath{\mathchoice
-                     {\mbox{\boldmath$\displaystyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\textstyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\scriptstyle\mathbf{#1}$}}
-                     {\mbox{\boldmath$\scriptscriptstyle\mathbf{#1}$}}}}%
-}
-{\def\vec#1{\ensuremath{\mathchoice
-                     {\mbox{\boldmath$\displaystyle#1$}}
-                     {\mbox{\boldmath$\textstyle#1$}}
-                     {\mbox{\boldmath$\scriptstyle#1$}}
-                     {\mbox{\boldmath$\scriptscriptstyle#1$}}}}%
-}
-\fi}
+% \def\fig@type{arrow}% temporarily abused
+% \AtBeginDocument{\ifx\vec@style\fig@type\else
+% \@ifundefined{vec@style}{%
+%  \def\vec#1{\ensuremath{\mathchoice
+%                      {\mbox{\boldmath$\displaystyle\mathbf{#1}$}}
+%                      {\mbox{\boldmath$\textstyle\mathbf{#1}$}}
+%                      {\mbox{\boldmath$\scriptstyle\mathbf{#1}$}}
+%                      {\mbox{\boldmath$\scriptscriptstyle\mathbf{#1}$}}}}%
+% }
+% {\def\vec#1{\ensuremath{\mathchoice
+%                      {\mbox{\boldmath$\displaystyle#1$}}
+%                      {\mbox{\boldmath$\textstyle#1$}}
+%                      {\mbox{\boldmath$\scriptstyle#1$}}
+%                      {\mbox{\boldmath$\scriptscriptstyle#1$}}}}%
+% }
+% \fi}
 % tensor
 \def\tens#1{\relax\ifmmode\mathsf{#1}\else\textsf{#1}\fi}
 

@@ -1,16 +1,19 @@
 \indexentry{acronyms, list of}{xiii}
 \indexentry{symbols, list of}{xiii}
 \indexentry{linear model, univariate}{3}
+\indexentry{broadcast}{4}
 \indexentry{gradient descent}{6}
 \indexentry{loss function}{6}
+\indexentry{Mean Squared Error (MSE)}{6}
 \indexentry{gradient}{7}
-\indexentry{gradient field}{8}
+\indexentry{gradient field}{9}
 \indexentry{backpropagation}{10}
 \indexentry{gradient descent}{10}
 \indexentry{epoch}{11}
-\indexentry{hidden layer}{14}
-\indexentry{embedding}{23}
-\indexentry{label encoding}{23}
-\indexentry{ordinal encoding}{23}
-\indexentry{one-hot encoding}{24}
-\indexentry{ring}{25}
+\indexentry{hidden layer}{15}
+\indexentry{hidden dimension}{16}
+\indexentry{embedding}{24}
+\indexentry{label encoding}{24}
+\indexentry{ordinal encoding}{25}
+\indexentry{one-hot encoding}{25}
+\indexentry{Jacobian Matrix}{29}

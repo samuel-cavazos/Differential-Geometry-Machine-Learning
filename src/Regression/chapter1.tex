@@ -16,23 +16,27 @@
 }
 
 \abstract{
-    This chapter introduces the principles of linear regression as a foundation for understanding the connection between differential geometry and machine learning. A simple linear model $M(x) = x \cdot W + b$ is constructed, and a loss function is used to quantify prediction errors. The chapter details the derivation of gradients for the loss with respect to the model parameters $W$ and $b$, providing insights into how these gradients guide the optimization process.
+    This chapter introduces the principles of linear regression as a foundation for understanding the connection between differential geometry and machine learning. A simple linear model $M(x) = x\cdot W + b$ is constructed, and a loss function is used to quantify prediction errors. The chapter details the derivation of gradients for the loss with respect to the model parameters $W$ and $b$, providing insights into how these gradients guide the optimization process.
 }
 
 \section{Linear Models}
 \label{sec:1}
 Linear regressions are a fundamental tool in statistics and machine learning for modeling the relationship between a dependent variable $y$ and one or more independent variables $x$. The simplest form of linear regression is a univariate linear model\index{linear model, univariate}, which assumes a linear relationship between $y$ and $x$ of the form $y = x\cdot W + b$, where $W,b\in\mathbb{R}$ are real numbers. The model parameters $W$ and $b$ are learned from a dataset of input-output pairs $\{(x_i, y_i)\}_{i=1}^N$ by minimizing a loss function that quantifies the prediction errors of the model. 
 
-A more general form of the linear model is:
-$$M(x) = x\cdot W + b,$$
+Let's define a more general version of the linear model. 
+Suppose we have $n$ samples, each with $d$ features, and our target is to predict $m$ outputs for each sample. We can represent the input data as a matrix $X\in\mathbb{R}^{n\times d}$ and the output data as a matrix $Y\in\mathbb{R}^{n\times m}$.
+
+The linear model $M(X)$ is then defined as:
+$$M(X) = X\cdot W^\T+b,$$
 where:
 \begin{itemize}
-    \item $W$ is a \textbf{weight matrix} of shape $m \times d$,
-    \item $x$ is a $d$-dimensional input vector,
-    \item $b$ is an $m$-dimensional \textbf{bias vector}.
+    \item $X\in \R^{n\times d}$ is the input matrix,
+    \item $W\in\R^{m\times d}$ is the weight matrix,
+    \item $b \in \R^{n\times m}$ is the bias matrix. 
 \end{itemize}
 
-Here, the model $M(x)$ outputs an $m$-dimensional vector prediction. This flexibility allows linear regression to handle scenarios where the model predicts multiple outputs simultaneously, making it applicable to a wide range of machine learning tasks. We begin by studying the univariate case.
+The bias matrix $b$ is constructed from the bias vector $\vec{b}\in\R^{m}$ by replicating it $n$ times. In other words, each row of the bias matrix $b$ is the bias vector $\vec{b}$. $\vec{b}$ is said to be \emph{broadcasted}\index{broadcast} to the shape of $b$.
+
 
 \section{Univariate Linear Models}
 \label{sec:2}
@@ -52,13 +56,13 @@ In Figure \ref{fig:linear1}, the \textit{best fit} for this data is the function
 Let us start by constructing a simple machine-learning model for linear regression with no hidden layers, which essentially means there are no intermediate computations between the input and the output in our model.
 
 Our goal is to build a machine-learning model 
-$M:[0,10]\to\mathbb{R}$ of the form $$M(x) = x \cdot W + b,$$ where $W\in\mathbb{R}$ and $b\in\mathbb{R}$. Here, $W$ is called the **weight** and $b$ is called the **bias**.   
+$M:[0,10]\to\mathbb{R}$ of the form $$M(x) = x\cdot W + b,$$ where $W\in\mathbb{R}$ and $b\in\mathbb{R}$. Here, $W$ is called the \emph{weight} and $b$ is called the \emph{bias}.   
 
 Here, we define our linear model:
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.2.py}
 
-In machine-learning, a model is initialized with random weights and biases, which are then corrected during training by minimizing a **loss function**. Let's start by choosing some random $W$ and $b$.
+In machine-learning, a model is initialized with random weights and biases, which are then corrected during training by minimizing a \emph{loss function}. Let's start by choosing some random $W$ and $b$.
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.3.py}
 \texttt{\small{Initial weight: 0.5136609336515561\\
@@ -78,8 +82,20 @@ Let's work on improving the model. Improving our model will involve tweaking $W$
 
 \subsection{Gradient Descent for Univariate Linear Models}
 \label{subsec:2}
-We first define a \textbf{loss function}\index{loss function} to measure how our model is performing. This function will quantify the difference between the model's predictions and the actual data. A common loss function for linear regression is the \textit{Mean Squared Error} (MSE), which is defined as:
-$$\mathcal{L} = MSE = \frac{1}{N}\sum_{i=1}^N\left(y_\text{i,pred} - y_\text{i,true}\right)^2.$$
+We first define a \textbf{loss function}\index{loss function} to measure how our model is performing. This function will quantify the difference between the model's predictions and the actual data. A common loss function for linear regression is the \textit{Mean Squared Error}\index{Mean Squared Error (MSE)} (MSE), which is defined as:
+\begin{equation}
+\label{eq:mse}
+\mathcal{L}(Y_{\text{pred}},Y) = \frac{1}{n}\|Y_\text{pred} - Y\|^2 = \frac{1}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)})^2,
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $Y_{\text{pred}},Y \in \R^n$ are the predicted and true values, respectively, 
+    \item $n$ is the number of samples,
+    \item $y_{\text{pred}}^{(i)}$ and $y^{(i)}$ are the predicted and true values for the $i$-th sample, respectively.
+\end{itemize}
+
+This loss function penalizes large deviations of $Y_\text{pred}$ from $Y$ by squaring the differences.
 
 \lstinputlisting[language=Python]{Regression/code/1.1.1.5.py}
 \texttt{50th sample target: -3.2562046439706913\\
@@ -102,37 +118,53 @@ By computing these gradients, we can iteratively update $W$ and $b$ to minimize 
 
 \subsubsection{Gradients}
 \begin{enumerate}
-    \item \textit{Gradient with Respect to Weight $W$:}
+    \item \textit{Gradient with Respect to Weight \( W \):}
 
-    The partial derivative $\frac{\partial \mathcal{L}}{\partial W}$ measures how the loss changes concerning the weight $W$. A positive derivative suggests that increasing $W$ will increase the loss, while a negative derivative indicates that increasing $W$ will decrease the loss. By moving $W$ in the direction opposite to the gradient, we can reduce the loss.
+    The partial derivative \( \frac{\partial \mathcal{L}}{\partial W} \) measures how the loss changes with respect to the weight \( W \). A positive derivative suggests that increasing \( W \) will increase the loss, while a negative derivative indicates that increasing \( W \) will decrease the loss. By moving \( W \) in the direction opposite to the gradient, we can reduce the loss.
 
-    If $x_i$ is the i-th data point, let $y_{i,\text{pred}} = W \cdot x_i + b$ be the predicted value for the $i$-th data point while $y_{i,\text{true}}$ denotes the true value. Mathematically, this gradient is computed as:
+    For the \( i \)-th data point, let \( y_\text{pred}^{(i)} = x_i \cdot W^\top + b \) be the predicted value while \( y^{(i)} \) denotes the true value. Mathematically, this gradient is computed as:
     \begin{align*}
-        \frac{\partial \mathcal{L}}{\partial W} &= \frac{\partial}{\partial W}\left( \frac{1}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})^2\right) \nonumber \\
-        & = \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial W}(y_{i,\text{pred}} - y_{i,\text{true}})^2 \qquad \text{(Additive property of derivatives)} \nonumber \\
-        & = \frac{1}{N}\sum_{i=1}^N\frac{\partial}{\partial W}((W\cdot x_i + b) - y_{i,\text{true}})^2 \nonumber \\
-        & = \frac{1}{N}\sum_{i=1}^N 2\cdot((W\cdot x_i + b) - y_{i,\text{true}})\cdot (x_i) \qquad \text{(Chain rule)} \nonumber \\
-        & = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.
+        \frac{\partial \mathcal{L}}{\partial W} &= \frac{\partial}{\partial W} \left( \frac{1}{n} \sum_{i=1}^n (y_\text{pred}^{(i)} - y^{(i)})^2 \right) \\
+        &= \frac{1}{n} \sum_{i=1}^n \frac{\partial}{\partial W} \left( (x_i \cdot W^\top + b - y^{(i)})^2 \right) \quad \text{(Substitute model equation)} \\
+        &= \frac{1}{n} \sum_{i=1}^n 2 \cdot (y_\text{pred}^{(i)} - y^{(i)}) \cdot x_i \quad \text{(Chain rule)} \\
+        &= \frac{2}{n} \sum_{i=1}^n (y_\text{pred}^{(i)} - y^{(i)}) \cdot x_i.
     \end{align*}
 
-    Thus, we find that 
+    Thus, we find that:
     \begin{equation}
-        \frac{\partial \mathcal{L}}{\partial W} = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}})\cdot x_i.
-        \label{eq:gradient_w}
+    \label{eq:gradient-w}
+    \frac{\partial \mathcal{L}}{\partial W} = \frac{2}{n} \sum_{i=1}^n (y_\text{pred}^{(i)} - y^{(i)}) \cdot x_i,
     \end{equation}
-    
-    \item \textit{Gradient with Respect to Bias $ b $:}
+    or equivalently in matrix form:
+    \begin{equation}
+    \label{eq:gradient-w-matrix}
+    \frac{\partial \mathcal{L}}{\partial W} = \frac{2}{n} \left( Y_{\text{pred}} - Y \right)^\top X,
+    \end{equation}
+    where \( X \) is the input matrix of shape \( n \times d \), and \( Y_{\text{pred}}, Y \in \mathbb{R}^n \).
 
-    Similarly, the partial derivative $\frac{\partial \mathcal{L}}{\partial b}$ measures how the loss changes concerning the bias $b$. Adjusting $b$ in the direction opposite to this gradient will also help in minimizing the loss.
+    \item \textit{Gradient with Respect to Bias \( b \):}
+
+    Similarly, the partial derivative \( \frac{\partial \mathcal{L}}{\partial b} \) measures how the loss changes with respect to the bias \( b \). Adjusting \( b \) in the direction opposite to this gradient will help minimize the loss.
 
     This gradient is computed as:
+    \[
+        \frac{\partial \mathcal{L}}{\partial b} = \frac{\partial}{\partial b} \left( \frac{1}{n} \sum_{i=1}^n (y_\text{pred}^{(i)} - y^{(i)})^2 \right),
+    \]
+    which simplifies to:
     \begin{equation}
-        \frac{\partial \mathcal{L}}{\partial b} = \frac{2}{N}\sum_{i=1}^N(y_{i,\text{pred}} - y_{i,\text{true}}).
-        \label{eq:gradient_b}
+    \label{eq:gradient-b}
+    \frac{\partial \mathcal{L}}{\partial b} = \frac{2}{n} \sum_{i=1}^n (y_\text{pred}^{(i)} - y^{(i)}),
     \end{equation}
+    or equivalently:
+    \begin{equation}
+    \label{eq:gradient-b-matrix}
+    \frac{\partial \mathcal{L}}{\partial b} = \frac{2}{n} \mathbf{1}^\top \left( Y_{\text{pred}} - Y \right),
+    \end{equation}
+    where \( \mathbf{1} \) is a vector of ones of size \( n \).
 
-    Proof of this equation is left as an exercise to the reader.
+    Proof of this equation is left as an exercise for the reader.
 \end{enumerate}
+
 
 With that, we can compute the gradients in Python:
 
@@ -225,52 +257,120 @@ A classic example that demonstrates the concept of non-linear separability in lo
     \end{minipage}
 \end{figure}
 
-Returning back to our linear model, let's change the model's architecture to include a hidden layer. To summarize the new model architecture:
-\begin{itemize}
-    \item The \textit{input layer} reshapes $x$ into a column vector $\vec{v}\in \mathbb{R}^{N\times 1}$.
-    \item The \textit{hidden layer} maps $\vec{v}$ from $\mathbb{R}^{N\times 1}$ to $Z_1\in\mathbb{R}^{N\times d}$ using a linear transformation and activation function.
-    \item The \textit{output layer} maps the hidden representation in $\mathbb{R}^{N\times d}$ to the final prediction $y_{\text{pred}}\in\mathbb{R}^{N\times 1}$ using a linear transformation.
-\end{itemize}
+\subsection*{Model with a Hidden Layer}
+
+To extend the linear model to include a hidden layer, we define the architecture mathematically as follows:
 
 \begin{enumerate}
     \item \textbf{Input Layer:}
     \begin{itemize}
-        \item Takes a single real number $x\in \mathbb{R}$ as input.
-        \item During training, the inputs are reshaped into a column vector $$\vec{v}=\begin{bmatrix}x_1\\x_2\\\vdots\\x_N\end{bmatrix}\in\mathbb{R}^{N\times 1},$$ where $N$ is the number of samples. We call $\vec{v}$ a \emph{batch}. Though we train with batches, inference is done on a single row at a time. 
-        
-        To see why training with batches still allows us to inference on a single row, see \ref{sec:training-with-batches} in the Appendix.
+        \item The input matrix \( X \in \mathbb{R}^{n \times d} \) represents a batch of \( n \) samples, where each row corresponds to one data sample, and \( d \) is the number of input features.
+        \item For inference, the model operates on a single sample (a row vector \( x \in \mathbb{R}^{1 \times d} \)) (see \ref{sec:training-with-batches} in the Appendix for why inference on a single sample works even though the model is trained on batches).
+    \end{itemize}
 
-    \end{itemize}
     \item \textbf{Hidden Layer:}
-    
-    The hidden layer maps the input $\vec{v}$ from $\mathbb{R}^{N\times 1}$ to $Z_1\in\mathbb{R}^{N\times d}$, where $d$ is the hidden dimension.
-    We first perform a linear transformation with the input vector:
-    $$Z_1 = \vec{v}\cdot W_1 + b_1,$$
-    where 
     \begin{itemize}
-        \item $W_1\in\mathbb{R}^{1\times d}$ is the weight matrix,
-        \item $b_1\in\mathbb{R}^{1\times d}$ is the bias vector.
-        \item $Z_1\in\mathbb{R}^{N\times d}$ is the resulting representation of our vector.
+        \item The hidden layer applies a linear transformation followed by a non-linear activation. Mathematically:
+        \[
+        Z_1 = X W_1 + \mathbf{1} b_1^\top,
+        \]
+        where:
+        \begin{itemize}
+            \item \( W_1 \in \mathbb{R}^{d \times h} \) is the weight matrix,
+            \item \( b_1 \in \mathbb{R}^{h} \) is the bias vector (broadcasted across all samples),
+            \item \( \mathbf{1} \in \mathbb{R}^{n \times 1} \) is a column vector of ones to handle the broadcast addition,
+            \item \( Z_1 \in \mathbb{R}^{n \times h} \) is the resulting matrix after the linear transformation.
+        \end{itemize}
+        The dimension $h$ is referred to as the \emph{hidden dimension}\index{hidden dimension}, or \texttt{hidden\_dim}.
+        \item A non-linear activation function \( \sigma \) is applied element-wise to \( Z_1 \) to produce:
+        \[
+        A_1 = \sigma(Z_1),
+        \]
+        where \( A_1 \in \mathbb{R}^{n \times h} \) is the activation output. We will discuss activation functions in more detail later.
     \end{itemize}
-    Once the linear transformation is complete, we apply a non-linear activation function to the result. This function introduces non-linearity into the model, allowing it to learn complex patterns in the data:
-    $$ A_1 = \sigma(Z_1), \quad A_1\in\mathbb{R}^{N\times d}.$$
-    We will discuss activation functions in more detail soon.
 
     \item \textbf{Output Layer:}
-    
-    The hidden layer's output $A_1\in\mathbb{R}^{N\times d}$ is then passed through the output layer, which maps it to the final prediction $y_{\text{pred}}\in\mathbb{R}^{N\times 1}$ using a linear transformation:
-    $$Z_2 = A_1\cdot W_2 + b_2,$$
-    where
     \begin{itemize}
-        \item $W_2\in\mathbb{R}^{d\times 1}$ is the weight matrix,
-        \item $b_2\in\mathbb{R}^{1\times 1}$ is the bias vector,
-        \item $Z_2\in\mathbb{R}^{N\times 1}$ is the intermediate prediction.
+        \item The output layer applies another linear transformation to the hidden representation \( A_1 \), mapping it to the final prediction:
+        \[
+        Z_2 = A_1 W_2 + \mathbf{1} b_2,
+        \]
+        where:
+        \begin{itemize}
+            \item \( W_2 \in \mathbb{R}^{h \times m} \) is the weight matrix,
+            \item \( b_2 \in \mathbb{R}^{m} \) is the bias vector (broadcasted across all samples),
+            \item \( Z_2 \in \mathbb{R}^{n \times m} \) is the intermediate output before any final activation.
+        \end{itemize}
+        \item If a final activation function \( \phi \) is applied, the prediction becomes:
+        \[
+        Y_{\text{pred}} = \phi(Z_2),
+        \]
+        where \( \phi \) is the activation function. For regression tasks, this step is often omitted, so:
+        \[
+        Y_{\text{pred}} = Z_2.
+        \]
     \end{itemize}
-    
-    In some applications, $Z_2$ is passed through a final activation function to produce the final prediction $y_{\text{pred}}$, though for simple univariate linear regression, this step is often omitted, so 
-    $$y_{\text{pred}} = Z_2.$$
-
 \end{enumerate}
+
+\subsection*{Summary of Transformations}
+
+Given \( X \in \mathbb{R}^{n \times d} \), the transformations in the model are:
+\begin{enumerate}
+    \item Hidden Layer:
+    \[
+    Z_1 = X W_1 + \mathbf{1} b_1^\top, \quad A_1 = \sigma(Z_1), \quad Z_1, A_1 \in \mathbb{R}^{n \times h}.
+    \]
+    \item Output Layer:
+    \[
+    Z_2 = A_1 W_2 + \mathbf{1} b_2, \quad Y_{\text{pred}} = \phi(Z_2), \quad Z_2, Y_{\text{pred}} \in \mathbb{R}^{n \times m}.
+    \]
+\end{enumerate}
+
+You will often see graphs representing neural networks with nodes and edges, like the one below. Each node represents a \emph{neuron}, and each edge represents a \emph{connection} between neurons. The connections are weighted by the parameters \( W \) and \( b \). The activation functions are applied at each neuron, transforming the input data.
+
+\begin{tikzpicture}[
+    every node/.style={circle, draw, minimum size=1cm},
+    layer/.style={rectangle, draw=none, minimum size=1cm},
+    >=latex
+]
+
+% Input layer
+\node[layer] (input_layer) at (0, 0) {Input Layer};
+\node (I1) [below=1cm of input_layer] {$c_1$};
+\node (I2) [below=1cm of I1] {$c_2$};
+\node (I3) [below=1cm of I2] {$c_3$};
+
+% Hidden layer
+\node[layer] (hidden_layer) [right=2cm of input_layer] {Hidden Layer};
+\node (H1) [right=3cm of I1] {};
+\node (H2) [below=1cm of H1] {};
+\node (H3) [below=1cm of H2] {};
+
+% Output layer
+\node[layer] (output_layer) [right=2cm of hidden_layer] {Output Layer};
+\node (O1) [right=3cm of H2] {$y_{\text{pred}}$};
+
+% Connections (Input to Hidden)
+\draw[->] (I1) -- (H1);
+\draw[->] (I1) -- (H2);
+\draw[->] (I1) -- (H3);
+\draw[->] (I2) -- (H1);
+\draw[->] (I2) -- (H2);
+\draw[->] (I2) -- (H3);
+\draw[->] (I3) -- (H1);
+\draw[->] (I3) -- (H2);
+\draw[->] (I3) -- (H3);
+
+% Connections (Hidden to Output)
+\draw[->] (H1) -- (O1);
+\draw[->] (H2) -- (O1);
+\draw[->] (H3) -- (O1);
+
+\end{tikzpicture}
+
+The nodes labeled $c_1, \ldots, c_3$ correspond to the features (columns) of the input matrix $X\in \R^{n\times d}$. Mathematically, this layer simply passes the input features as is, preparing them for the hidden layer. In the hidden layer, each node aggregates contributions from all input features through a linear transformation. 
+
+Truthfully, these graphs aren't necessary for understanding the model, and in fact I still have a rather difficult time interpreting them. However, they are useful for visualizing the model and understanding the flow of data through the network. To some people. 
 
 Layers are connected by an \textbf{activation function}. Activation functions should satisfy the following criteria:
 \begin{itemize}
@@ -318,7 +418,7 @@ As you can see, the higher-dimensional hidden layer allows the model to learn mo
 
 \section{Multivariate Linear Models}
 The next step in our journey is the multivariate linear model with no hidden layers. This model is an extension of the univariate model, allowing for multiple input features. The model definition is the same as that of the univarite case:
-$$M(x) = x\cdot W + b,$$
+$$M(x) = W^\T\cdot x + b,$$
 where:
 \begin{itemize}
     \item $W$ is a \textbf{weight matrix} of shape $d \times m$,
@@ -444,49 +544,206 @@ One-hot encoding the day column resulted in four new columns, each representing 
 
 This method preserves the categorical nature of the data without introducing an ordinal relationship between the categories. This still doesn't capture the cyclic nature of the days of the week, but it does a better job at separating the days of the week into distinct categories without introducing an ordinal relationship between them.
 
-\subsubsection{Encoding using Rings}
-Let's now approach encoding categorical data from a more abstract perspective. Let's begin by defining a \emph{ring}.
+Let's train a multivariate linear model on the \emph{Tips} dataset using one-hot encoding. The process is similar to the univariate case, but we now have multiple input features. Our input data $X$ is now a matrix of shape $n\times d$, where $n$ is the number of samples and $d$ is the number of features, rather than a vector like in the univariate case. Still, the matrix algebra is the same. 
 
-\begin{definition}
-    A \textbf{ring}\index{ring} is a set $R$ equipped with two binary operations $+$ and $\cdot$ such that:
-    \begin{enumerate}
-        \item $(R,+)$ is an abelian group, i.e.
-        \begin{itemize}
-            \item $(a+b)+c = a+(b+c)$ for all $a,b,c\in R$ (associativity of addition),
-            \item $a+b = b+a$ for all $a,b\in R$ (commutativity of addition),
-            \item There exists an element $0\in R$ such that $a+0 = a$ for all $a\in R$ (additive identity),
-            \item For every $a\in R$, there exists an element $-a\in R$ such that $a+(-a) = 0$ (additive inverse).
-        \end{itemize}
-        \item $(R,\cdot)$ is a monoid, i.e.
-        \begin{itemize}
-            \item $(a\cdot b)\cdot c = a\cdot(b\cdot c)$ for all $a,b,c\in R$ (associativity of multiplication),
-            \item There exists an element $1\in R$ such that $a\cdot 1 = a$ for all $a\in R$ (multiplicative identity).
-        \end{itemize}
-        \item Multiplication distributes over addition: 
-        \begin{itemize}
-            \item $a\cdot(b+c) = a\cdot b + a\cdot c$ for all $a,b,c\in R$ (left distributivity).
-            \item $(a+b)\cdot c = a\cdot c + b\cdot c$ for all $a,b,c\in R$ (right distributivity).
-        \end{itemize}
-    \end{enumerate}
-\end{definition}
+Our goal is to build a model that predicts the tip amount based on the available features. We've already encoded the \texttt{day} column. We'll have to encode the other features as well. As it turns out, the other features each have only two categories, so we can just encode them using label encoding, which will give us a binary column for each feature.
+
+\lstinputlisting[language=Python]{Regression/code/1.3.1.4.py}
+
+\texttt{sex encoding:\\
+Male: 1 Female: 0\\ \\
+smoker encoding:\\
+Yes: 1 No: 0 \\ \\
+time encoding:\\ 
+Lunch: 1 Dinner: 0
+}
+
+\begin{table}[ht]
+    \centering 
+    \begin{tabular}{lrrrrrrrrrr}
+        \toprule
+        total\_bill & sex\_encoded & smoker\_encoded & time\_encoded & day\_Thur & day\_Fri & day\_Sat & day\_Sun & size & tip \\
+        \midrule
+        12.02 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 2 & 1.97 \\
+        29.85 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 5 & 5.14 \\
+        19.44 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 2 & 3.00 \\
+        35.83 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 3 & 4.67 \\
+        27.20 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 4 & 4.00 \\
+        \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+        \bottomrule
+    \end{tabular}      
+    \caption{Random sample of the encoded \emph{Tips} dataset}
+    \label{tab:encoded_data}
+\end{table}
+
+Our input matrix $X$ is now a matrix of shape $n\times d$, where $n$ is the number of samples and $d$ is the number of features:
+
+$$
+X = \left(\begin{array}{cccccccccc}
+    70 & 12.02 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 2 \\ 
+    155 & 29.85 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 5  \\
+    80 & 19.44 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 2  \\
+    238 & 35.83 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 3  \\
+    77 & 27.20 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 4  \\
+    \vdots & & & \vdots & & & & & & \vdots
+\end{array}\right)
+$$
+
+We need to create a model of the form 
+$$M(X) = X\cdot W^\T+b,$$
+where:
+\begin{itemize}
+    \item $X\in \R^{n\times d}$ is the input matrix,
+    \item $W\in\R^{m\times d}$ is the weight matrix,
+    \item $b \in \R^{n\times m}$ is the bias matrix, constructed by broadcasting the bias row vector $\vec{b}\in\R^m$ $n$ times.
+\end{itemize}
+
+In our current application, we have $d=9$ features, and since for each row we want to output a single number (the tip amount), we have $m=1$. Therefore, our weight matrix $W$ will be of shape $m\times d = 1\times 9$, and thus $W^\T$ will be of shape $d \times m = 9\times 1$. Our bias vector $\vec{b}\in \R^{m}=\R^1$ will be of shape $1\times 1$, and our bias matrix $b$ will be of shape $n\times 1$. 
+
+As before, we initialize a random weight $W$ and bias $b$.
+
+\begin{codeblock}
+X = data[features].values
+print(f'Shape of X: {X.shape}')
+
+y = data[target].values
+print(f'Shape of y: {y.shape}')
+
+# Initialize random weight and bias for a linear model
+import numpy as np
+W = np.random.randn(X.shape[1])
+print(f'Shape of W: {W.shape}')
+
+b = np.random.randn(1)
+print(f'Shape of b: {b.shape}')
+\end{codeblock}
+\texttt{
+Shape of X: (244, 9)\\
+Shape of y: (244,)\\
+Shape of W: (9,)\\
+Shape of b: (1,)
+}
+
+Now we need a loss function as before. We will use the mean squared error loss function, defined as:
+$$\mathcal{L}(y_{\text{pred}},y) = \frac{1}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)})^2 = \frac{1}{n}\|Y_\text{pred} - Y\|^2,$$
+where $y_{\text{pred}}^{(i)}=X\cdot W^\T + b$ is the predicted tip amount for the $i$-th sample, and $y^{(i)}$ is the actual tip amount for the $i$-th sample.
+
+Though our model $M$ is taking in a matrix $X$ of size $n\times d$, it will still work on a single row with $d$ columns (see \ref{sec:training-with-batches} in the appendix). In this way, we can view our model as a map $M:\R^{d}\to\R^{m}$. 
+
+\subsubsection{The Jacobian Matrix}
+Suppose $f:\R^d \to\R^m$ is a function such that each of its first-order derivatives exists over $\R^d$. The \emph{Jacobian matrix}\index{Jacobian Matrix} of $f$ is a matrix of partial derivatives:
+\begin{align}
+\label{eq:jacobian}
+J_f = \left(\begin{array}{cccc}
+    \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \cdots & \frac{\partial f_1}{\partial x_d} \\
+    \frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \cdots & \frac{\partial f_2}{\partial x_d} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \frac{\partial f_m}{\partial x_1} & \frac{\partial f_m}{\partial x_2} & \cdots & \frac{\partial f_m}{\partial x_d}
+\end{array}\right).
+\end{align}
+
+Given some point $p\in \R^d$, the Jacobian matrix evaluated at $p$ is denoted $J_f(p)$. The Jacobian matrix is a generalization of the gradient to multivariate functions. The gradient is a special case of the Jacobian matrix when $m=1$, where the Jacobian (a row vector) is the transpose of the gradient (a column vector).
 
 \begin{example}
-    The integers $\Z$ form a ring under addition and multiplication. The integers modulo $n$, denoted $\Z/n\Z$, also form a ring under addition and multiplication modulo $n$.
+Suppose $f:\R^2\to\R^3$ is defined as 
+$$f(x_1,x_2) = \left[\begin{array}{c}f_1(x_1,x_2) \\ f_2(x_1,x_2) \\ f_3(x_1,x_2)\end{array}\right] = \left[\begin{array}{c}x_1^2 + x_2 \\ \sin(x_1x_2) \\ e^{x_1-x_2}\end{array}\right].$$
+Then the Jacobian matrix $J_f$ of $f$ is
+\begin{align*}
+    J_f &= \left(\begin{array}{cc}
+        \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} \\
+        \frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} \\
+        \frac{\partial f_3}{\partial x_1} & \frac{\partial f_3}{\partial x_2}
+    \end{array}\right) \\
+    &= \left(\begin{array}{cc}
+        2x_1 & 1 \\
+        x_2\cos(x_1x_2) & x_1\cos(x_1x_2) \\
+        e^{x_1-x_2} & -e^{x_1-x_2}
+    \end{array}\right).
+\end{align*}
+
+At the point $p=(1,2)\in \R^2$, the Jacobian matrix $J_f$ evaluated at $p$ is
+$$
+J_f(1,2) = \left(\begin{array}{cc}
+    2 & 1 \\
+    2\cos(2) & \cos(2) \\
+    e^{-1} & -e^{-1}
+\end{array}\right) \approx \left(\begin{array}{cc}2 & 1 \\ -0.832 & -0.416 \\ 0.367 & -0.367\end{array}\right)
+$$
 \end{example}
 
-\begin{example}
-    The abelian group $\Z/\Z_2$, the integers modulo $2$, forms a ring under addition and multiplication modulo $2$. Two elements, $[x],[y]\in\Z/\Z_2$, are equivalent in $\Z/\Z_2$ if $x-y$ is divisible by $2$. For example, $[3]=[1]$ in $\Z/\Z_2$ since $3-1=2$ is divisible by $2$.
+\begin{example}[Gradient of Mean Squared Error]
+Let's consider the loss function (MSE) from our linear model:
+$$\mathcal{L}(y_{\text{pred}},y) = \frac{1}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)})^2,$$
+where $y_{\text{pred}}^{(i)} = X\cdot W^\T + b$ is the predicted tip amount for the $i$-th sample, and $y^{(i)}$ is the actual tip amount for the $i$-th sample. 
+
+The Jacobian of $\loss$ with respect to the parameters $W$ and $b$ is:
+$$J_\loss = \left(\begin{array}{c}
+    \frac{\partial \loss}{\partial W} \\ \frac{\partial \loss}{\partial b} 
+\end{array}\right)= 
+\left(\begin{array}{c}
+    \frac{2}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)})X_{i,:} \\
+    \frac{2}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)})
+\end{array}\right).$$
+Notice that the partial derivatives are very similar to what we computed in the univariate case. The only difference is that we are now working with matrices and vectors instead of scalars.
+\begin{proof}
+We need to derive two partial derivatives: $\frac{\partial \loss}{\partial W}$ and $\frac{\partial \loss}{\partial b}$.
+\begin{itemize}
+\item \textbf{Partial Derivative with Respect to $W$:}
+Using the chain rule:
+$$\frac{\partial \loss}{\partial W} = \frac{\partial \loss}{\partial y_{\text{pred}}}\frac{\partial y_{\text{pred}}}{\partial W}.$$
+Now, 
+\begin{align*}
+    \frac{\partial \loss}{\partial y_{\text{pred}}} &= \frac{1}{n}\sum_{i=1}^n 2(y_{\text{pred}}^{(i)}-y^{(i)}) = \frac{2}{n}\sum_{i=1}^n (y_{\text{pred}}^{(i)}-y^{(i)}), \\
+    \frac{\partial y_{\text{pred}}}{\partial W} &= \frac{\partial}{\partial W}(X\cdot W^\T + b) = X.
+\end{align*}
+\item \textbf{Partial Derivative with Respect to $b$:}
+\end{itemize}
+\end{proof}
+\end{example}
+
+% \subsubsection{Encoding using Rings}
+% Let's now approach encoding categorical data from a more abstract perspective. Let's begin by defining a \emph{ring}.
+
+% \begin{definition}
+%     A \textbf{ring}\index{ring} is a set $R$ equipped with two binary operations $+$ and $\cdot$ such that:
+%     \begin{enumerate}
+%         \item $(R,+)$ is an abelian group, i.e.
+%         \begin{itemize}
+%             \item $(a+b)+c = a+(b+c)$ for all $a,b,c\in R$ (associativity of addition),
+%             \item $a+b = b+a$ for all $a,b\in R$ (commutativity of addition),
+%             \item There exists an element $0\in R$ such that $a+0 = a$ for all $a\in R$ (additive identity),
+%             \item For every $a\in R$, there exists an element $-a\in R$ such that $a+(-a) = 0$ (additive inverse).
+%         \end{itemize}
+%         \item $(R,\cdot)$ is a monoid, i.e.
+%         \begin{itemize}
+%             \item $(a\cdot b)\cdot c = a\cdot(b\cdot c)$ for all $a,b,c\in R$ (associativity of multiplication),
+%             \item There exists an element $1\in R$ such that $a\cdot 1 = a$ for all $a\in R$ (multiplicative identity).
+%         \end{itemize}
+%         \item Multiplication distributes over addition: 
+%         \begin{itemize}
+%             \item $a\cdot(b+c) = a\cdot b + a\cdot c$ for all $a,b,c\in R$ (left distributivity).
+%             \item $(a+b)\cdot c = a\cdot c + b\cdot c$ for all $a,b,c\in R$ (right distributivity).
+%         \end{itemize}
+%     \end{enumerate}
+% \end{definition} 
+
+% \begin{example}
+%     The integers $\Z$ form a ring under addition and multiplication. The integers modulo $n$, denoted $\Z/n\Z$, also form a ring under addition and multiplication modulo $n$.
+% \end{example}
+
+% \begin{example}
+%     The abelian group $\Z/\Z_2$, the integers modulo $2$, forms a ring under addition and multiplication modulo $2$. Two elements, $[x],[y]\in\Z/\Z_2$, are equivalent in $\Z/\Z_2$ if $x-y$ is divisible by $2$. For example, $[3]=[1]$ in $\Z/\Z_2$ since $3-1=2$ is divisible by $2$.
     
-    When context is clear, we drop the brackets around the equivalence classes and write $x$ instead of $[x]$, which leads to the infamous:
-    $$1 + 1 = 0.$$ Since $1 + 1 = 2$ over $\Z$ and $2 - 0=2$ is divisible by $2$, the equivalence classes $[2]=[0]$ are the same so that $[1]+[1]=[0]$ in $\Z/\Z_2$.
-\end{example}
+%     When context is clear, we drop the brackets around the equivalence classes and write $x$ instead of $[x]$, which leads to the infamous:
+%     $$1 + 1 = 0.$$ Since $1 + 1 = 2$ over $\Z$ and $2 - 0=2$ is divisible by $2$, the equivalence classes $[2]=[0]$ are the same so that $[1]+[1]=[0]$ in $\Z/\Z_2$.
+% \end{example}
 
-The previous example is a ring with only two elements. Recall the one-hot encoding of the days of the week: Thursday was encoded as $(1,0,0,0)$, Friday as $(0,1,0,0)$, and so on. Each slot in the vector is either a $0$ or a $1$, depending on what is being encoded. This encoding embeds our categorical data into the direct product of rings:
-$$
-\prod_{i=1}^c \Z/\Z_2,
-$$
-where $c$ is the number of categories. 
+% $\Z/\Z_2$ is a ring with only two elements: $0$ and $1$. Recall the one-hot encoding of the days of the week: Thursday was encoded as $(1,0,0,0)$, Friday as $(0,1,0,0)$, and so on. Each slot in the vector is either a $0$ or a $1$, depending on what is being encoded. This encoding embeds our categorical data into the direct product of rings:
+% $$
+% \prod_{i=1}^c \Z/\Z_2,
+% $$
+% where $c$ is the number of categories. 
 
-Some might refer to this as a direct sum, but this terminology should be avoided in the context of rings. While $\bigoplus_{i=1}^c \Z/\Z_2$ is valid in the category of abelian groups, in ring theory, the direct sum and direct product differ. Though for finite rings, the direct sum and direct product coincide.
+% Some might refer to this as a direct sum, but this terminology should be avoided in the context of rings. While $\bigoplus_{i=1}^c \Z/\Z_2$ is valid in the category of abelian groups, in ring theory, the direct sum and direct product differ. Though for finite rings, the direct sum and direct product coincide.
 
-The \emph{direct sum} and \emph{direct product} are two closely related constructions that differ primarily in the context of infinite indexing sets. However, their behavior can diverge even for finite cases when we are careful about their definitions in different categories, such as rings or abelian groups (see \ref{sec:direct-sum-vs-direct-product} in the Appendix for more information).
+% The \emph{direct sum} and \emph{direct product} are two closely related constructions that differ primarily in the context of infinite indexing sets. However, their behavior can diverge even for finite cases when we are careful about their definitions in different categories, such as rings or abelian groups (see \ref{sec:direct-sum-vs-direct-product} in the Appendix for more information).

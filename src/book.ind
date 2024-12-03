@@ -7,11 +7,12 @@
 {\bf B}\nopagebreak%
  \indexspace\nopagebreak%
   \item backpropagation\idxquad 10
+  \item broadcast\idxquad 4
 
   \indexspace
 {\bf E}\nopagebreak%
  \indexspace\nopagebreak%
-  \item embedding\idxquad 23
+  \item embedding\idxquad 24
   \item epoch\idxquad 11
 
   \indexspace
@@ -19,30 +20,36 @@
  \indexspace\nopagebreak%
   \item gradient\idxquad 7
   \item gradient descent\idxquad 6,\,10
-  \item gradient field\idxquad 8
+  \item gradient field\idxquad 9
 
   \indexspace
 {\bf H}\nopagebreak%
  \indexspace\nopagebreak%
-  \item hidden layer\idxquad 14
+  \item hidden dimension\idxquad 16
+  \item hidden layer\idxquad 15
+
+  \indexspace
+{\bf J}\nopagebreak%
+ \indexspace\nopagebreak%
+  \item Jacobian Matrix\idxquad 29
 
   \indexspace
 {\bf L}\nopagebreak%
  \indexspace\nopagebreak%
-  \item label encoding\idxquad 23
+  \item label encoding\idxquad 24
   \item linear model, univariate\idxquad 3
   \item loss function\idxquad 6
 
   \indexspace
-{\bf O}\nopagebreak%
+{\bf M}\nopagebreak%
  \indexspace\nopagebreak%
-  \item one-hot encoding\idxquad 24
-  \item ordinal encoding\idxquad 23
+  \item Mean Squared Error (MSE)\idxquad 6
 
   \indexspace
-{\bf R}\nopagebreak%
+{\bf O}\nopagebreak%
  \indexspace\nopagebreak%
-  \item ring\idxquad 25
+  \item one-hot encoding\idxquad 25
+  \item ordinal encoding\idxquad 25
 
   \indexspace
 {\bf S}\nopagebreak%

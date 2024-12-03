@@ -1,6 +1,6 @@
 # Linear model
 def linear_model(x, w, b):
-    return w * x + b
+    return x * w + b
 
 y_pred = [linear_model(p, w, b) for p in x]
 
